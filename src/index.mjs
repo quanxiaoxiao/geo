@@ -6,6 +6,8 @@ const pointList = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'data',
 
 const buf = await generateImage({
   list: pointList,
+  minSize: 50,
+  range: 100,
 });
 
 fs.writeFileSync(path.resolve(process.cwd(), 'cqq.png'), buf);
