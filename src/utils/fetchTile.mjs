@@ -1,9 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import _ from 'lodash';
 import shelljs from 'shelljs';
+import UserAgent from 'user-agents';
 import { fetchData } from '@quanxiaoxiao/about-http';
 
 export default async (x, y, z) => {
+  const userAgent = new UserAgent({ platform: 'Win32' });
   const basedir = path.resolve(process.cwd(), 'tiles', `${z}`, `${x}`);
   if (!shelljs.test('-d', basedir)) {
     shelljs.mkdir('-p', basedir);
@@ -12,11 +15,12 @@ export default async (x, y, z) => {
   if (shelljs.test('-f', pathname)) {
     return fs.readFileSync(pathname);
   }
+  const host = `webrd${['01', '02', '03', '04'][_.random([0, 3])]}.is.autonavi.com`;
   const buf = await fetchData({
-    url: `http://webrd02.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x=${x}&y=${y}&z=${z}`,
+    url: `http://${host}/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x=${x}&y=${y}&z=${z}`,
     headers: {
-      host: 'webrd02.is.autonavi.com',
-      'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
+      host,
+      'user-agent': userAgent.toString(),
     },
     match: (statusCode) => statusCode === 200,
   });
