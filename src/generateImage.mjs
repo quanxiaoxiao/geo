@@ -1,14 +1,12 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import { loadImage, createCanvas } from '@napi-rs/canvas';
-import shelljs from 'shelljs';
-import { fetchData } from '@quanxiaoxiao/about-http';
 import gcoord from 'gcoord';
 import {
   mercator,
   calcLngAtTileX,
   calcLatAtTileY,
 } from './utils/index.mjs';
+import generateTiles from './utils/generateTiles.mjs';
+import fetchTile from './utils/fetchTile.mjs';
 import calcClusterPoints from './utils/calcClusterPoints.mjs';
 
 const createPaletten = () => {
@@ -22,27 +20,6 @@ const createPaletten = () => {
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, 256, 1);
   return ctx.getImageData(0, 0, 256, 1).data;
-};
-
-const fetchTile = async (x, y, z) => {
-  const basedir = path.resolve(process.cwd(), 'tiles', `${z}`, `${x}`);
-  if (!shelljs.test('-d', basedir)) {
-    shelljs.mkdir('-p', basedir);
-  }
-  const pathname = path.join(basedir, `${y}.png`);
-  if (shelljs.test('-f', pathname)) {
-    return fs.readFileSync(pathname);
-  }
-  const buf = await fetchData({
-    url: `http://webrd02.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x=${x}&y=${y}&z=${z}`,
-    headers: {
-      host: 'webrd02.is.autonavi.com',
-      'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
-    },
-    match: (statusCode) => statusCode === 200,
-  });
-  fs.writeFileSync(pathname, buf);
-  return buf;
 };
 
 const addMapLayer = async ({
@@ -134,27 +111,6 @@ const drawRange = ({
   }
 };
 
-const generateTileList = ({
-  zoom,
-  x1,
-  y1,
-  x2,
-  y2,
-}) => {
-  const result = [];
-
-  for (let x = x1; x < x2; x++) {
-    for (let y = y1; y < y2; y++) {
-      result.push({
-        x,
-        y,
-        z: zoom,
-      });
-    }
-  }
-  return result;
-};
-
 const generateImage = async ({
   list,
   minSize = 30,
@@ -183,7 +139,7 @@ const generateImage = async ({
   ctx.fillStyle = bg;
   ctx.beginPath();
   ctx.fillRect(0, 0, width, height);
-  const tileList = generateTileList({
+  const tileList = generateTiles({
     zoom,
     x1,
     y1,
