@@ -2,7 +2,6 @@ import {
   geoPath,
   geoMercator,
 } from 'd3-geo';
-// import drawPoints from './drawPoints.mjs';
 
 /*
 const centroid = geoCentroid(geoJson);
