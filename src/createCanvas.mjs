@@ -7,6 +7,5 @@ export default (width, height) => {
   ctx.fillStyle = bg;
   ctx.beginPath();
   ctx.fillRect(0, 0, width, height);
-  ctx.closePath();
   return ctx;
 };

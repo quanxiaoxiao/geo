@@ -13,13 +13,23 @@ export const calcTileYAtLat = (y, z) => {
   return (180 / PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
 };
 
-export const mercator = (zoom, transform) => (coordinate) => {
-  const x = calcLngAtTileX(coordinate[0], zoom) - transform[0];
-  const y = calcLatAtTileY(coordinate[1], zoom) - transform[1];
-  return [
-    x * 256,
-    y * 256,
+export const mercator = ({
+  center,
+  zoom,
+  width,
+  height,
+}) => {
+  const tileAtCenterX = calcLngAtTileX(center[0], zoom);
+  const tileAtCenterY = calcLatAtTileY(center[1], zoom);
+  const transform = [
+    tileAtCenterX * 256 - width / 2,
+    tileAtCenterY * 256 - height / 2,
   ];
+  return (coordinate) => {
+    const x = calcLngAtTileX(coordinate[0], zoom) * 256 - transform[0];
+    const y = calcLatAtTileY(coordinate[1], zoom) * 256 - transform[1];
+    return [x, y];
+  };
 };
 
 export const calcDist = (x1, y1, x2, y2) => {

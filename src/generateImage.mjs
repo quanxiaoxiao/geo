@@ -63,7 +63,6 @@ const generateDesityImg = ({
     ctx.fillStyle = gradient;
     ctx.arc(x, y, r, 0, 2 * Math.PI);
     ctx.fill();
-    ctx.closePath();
   }
   return ctx.getImageData(0, 0, width, height);
 };
