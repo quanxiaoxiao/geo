@@ -22,11 +22,13 @@
     "@quanxiaoxiao/about-http": "^0.1.6",
     "circle-to-polygon": "^2.2.0",
     "d3-geo": "^3.1.0",
+    "d3-scale": "^4.0.2",
     "gcoord": "^1.0.5",
     "kdbush": "^4.0.2",
     "lodash": "^4.17.21",
     "polylabel": "^1.1.0",
     "shelljs": "^0.8.5",
-    "user-agents": "^1.0.1444"
+    "supercluster": "^8.0.1",
+    "user-agents": "^0.0.2"
   }
 }

@@ -6,7 +6,6 @@ import UserAgent from 'user-agents';
 import { fetchData } from '@quanxiaoxiao/about-http';
 
 export default async (x, y, z) => {
-  const userAgent = new UserAgent({ platform: 'Win32' });
   const basedir = path.resolve(process.cwd(), 'tiles', `${z}`, `${x}`);
   if (!shelljs.test('-d', basedir)) {
     shelljs.mkdir('-p', basedir);
@@ -20,7 +19,7 @@ export default async (x, y, z) => {
     url: `http://${host}/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x=${x}&y=${y}&z=${z}`,
     headers: {
       host,
-      'user-agent': userAgent.toString(),
+      'user-agent': UserAgent.random(),
     },
     match: (statusCode) => statusCode === 200,
   });

@@ -5,6 +5,8 @@ import createCanvas from './createCanvas.mjs';
 import drawFromGeoJson from './draw/drawFromGeoJson.mjs';
 import drawLocation from './draw/drawLocation.mjs';
 import drawTiles from './draw/drawTiles.mjs';
+import drawHeatmap from './draw/drawHeatmap.mjs';
+import drawCluster from './draw/drawCluster.mjs';
 // import generateImage from './generateImage.mjs';
 
 const pointList = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'data', 'points.json')));
@@ -32,6 +34,7 @@ await drawTiles({
   zoom,
 });
 
+/*
 drawFromGeoJson({
   ctx,
   center,
@@ -45,6 +48,7 @@ drawFromGeoJson({
     gcoord.GCJ02,
   ),
 });
+*/
 
 drawFromGeoJson({
   ctx,
@@ -81,6 +85,34 @@ drawFromGeoJson({
       ),
     ],
   },
+});
+
+drawHeatmap({
+  ctx,
+  center,
+  zoom,
+  coordinates: gcoord.transform(
+    {
+      type: 'MultiPoint',
+      coordinates: pointList.map((d) => d.coordinate),
+    },
+    gcoord.WGS84,
+    gcoord.GCJ02,
+  ).coordinates,
+});
+
+drawCluster({
+  ctx,
+  center,
+  zoom,
+  coordinates: gcoord.transform(
+    {
+      type: 'MultiPoint',
+      coordinates: pointList.map((d) => d.coordinate),
+    },
+    gcoord.WGS84,
+    gcoord.GCJ02,
+  ).coordinates,
 });
 
 const buf = ctx.canvas.toBuffer('image/png');
