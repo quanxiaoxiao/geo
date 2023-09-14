@@ -38,11 +38,16 @@ export const calcDist = (x1, y1, x2, y2) => {
   return Math.sqrt(diffX * diffX + diffY * diffY);
 };
 
-export const makeIndex = (list) => {
+export const makeIndex = (list, fn) => {
   const index = new KDBush(list.length);
   for (let i = 0; i < list.length; i++) {
     const item = list[i];
-    index.add(item.coordinate[0], item.coordinate[1]);
+    if (fn) {
+      const [x, y] = fn(item);
+      index.add(x, y);
+    } else {
+      index.add(item[0], item[1]);
+    }
   }
   return index.finish();
 };

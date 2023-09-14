@@ -7,6 +7,8 @@ import drawLocation from './draw/drawLocation.mjs';
 import drawTiles from './draw/drawTiles.mjs';
 import drawHeatmap from './draw/drawHeatmap.mjs';
 import drawCluster from './draw/drawCluster.mjs';
+import drawCircle from './draw/drawCircle.mjs';
+import drawGrid from './draw/drawGrid.mjs';
 // import generateImage from './generateImage.mjs';
 
 const pointList = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'data', 'points.json')));
@@ -48,7 +50,6 @@ drawFromGeoJson({
     gcoord.GCJ02,
   ),
 });
-*/
 
 drawFromGeoJson({
   ctx,
@@ -60,6 +61,7 @@ drawFromGeoJson({
     gcoord.GCJ02,
   ),
 });
+*/
 
 drawLocation({
   ctx,
@@ -68,6 +70,7 @@ drawLocation({
   zoom,
 });
 
+/*
 drawFromGeoJson({
   ctx,
   center,
@@ -114,6 +117,46 @@ drawCluster({
     gcoord.GCJ02,
   ).coordinates,
 });
+
+drawCircle({
+  ctx,
+  center,
+  zoom,
+  coordinate: center,
+  radius: 2000,
+});
+*/
+
+drawGrid({
+  ctx,
+  center,
+  zoom,
+  radius: 16,
+  coordinates: gcoord.transform(
+    {
+      type: 'MultiPoint',
+      coordinates: pointList.map((d) => [d.coordinate[0], d.coordinate[1]]),
+    },
+    gcoord.WGS84,
+    gcoord.GCJ02,
+  ).coordinates,
+});
+
+/*
+drawFromGeoJson({
+  ctx,
+  center,
+  zoom,
+  data: gcoord.transform(
+    {
+      type: 'MultiPoint',
+      coordinates: pointList.map((d) => [d.coordinate[0], d.coordinate[1]]),
+    },
+    gcoord.WGS84,
+    gcoord.GCJ02,
+  ),
+});
+*/
 
 const buf = ctx.canvas.toBuffer('image/png');
 

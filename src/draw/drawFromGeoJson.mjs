@@ -70,7 +70,7 @@ const drawPoint = ({
 }) => {
   const [x, y] = projection(coordinate);
   ctx.fillStyle = '#f0f';
-  const r = 5;
+  const r = 3;
   ctx.beginPath();
   ctx.arc(x, y, r, 0, Math.PI * 2);
   ctx.fill();
@@ -157,7 +157,6 @@ export default ({
     .scale((2 ** zoom) * 256 / Math.PI / 2)
     .center(center)
     .translate([width / 2, height / 2]);
-
   draw({
     ctx,
     data,

@@ -20,6 +20,7 @@
   "dependencies": {
     "@napi-rs/canvas": "^0.1.44",
     "@quanxiaoxiao/about-http": "^0.1.6",
+    "chroma-js": "^2.4.2",
     "circle-to-polygon": "^2.2.0",
     "d3-geo": "^3.1.0",
     "d3-scale": "^4.0.2",

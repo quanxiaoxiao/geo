@@ -10,6 +10,7 @@ export default ({
   zoom,
 }) => {
   const { width, height } = ctx.canvas;
+  const fontSize = 13;
   const projection = mercator({
     width,
     height,
@@ -48,7 +49,6 @@ export default ({
       const r = radiusScale(count);
       ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.fill();
-      const fontSize = 13;
       ctx.font = `bold ${fontSize}px serif`;
       ctx.fillStyle = '#fff';
       ctx.beginPath();

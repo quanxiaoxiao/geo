@@ -32,7 +32,7 @@ const calcClusterPoints = ({
   minSize,
   bounds,
 }) => {
-  const index = makeIndex(list);
+  const index = makeIndex(list, (d) => d.coordinate);
   const x1 = Math.floor(bounds[0][0] * PRECISION);
   const y1 = Math.ceil(bounds[0][1] * PRECISION);
   const x2 = Math.ceil(bounds[1][0] * PRECISION);
@@ -65,7 +65,7 @@ const calcClusterPoints = ({
     }
     return 1;
   });
-  const clusterIndex = makeIndex(clusterList);
+  const clusterIndex = makeIndex(clusterList, (d) => d.coordinate);
   const excludeList = [];
   const result = [];
   for (let i = 0; i < clusterList.length; i++) {
