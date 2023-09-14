@@ -26,18 +26,18 @@ export default ({
     zoom,
   });
   const r = 1 / Math.sin(45 * Math.PI / 180) * radius;
-  const transform = [
-    (Math.ceil(countX) * radius * 2 - width) * 0.5 + radius,
-    (Math.ceil(countY) * radius * 2 - height) * 0.5 + radius,
-  ];
   const arr = coordinates.map((coordinate) => projection(coordinate));
   const index = makeIndex(arr);
-  const row = Math.floor(countX);
-  const column = Math.floor(countY);
+  const row = Math.floor(countY);
+  const column = Math.floor(countX);
+  const transform = [
+    (width - column * (radius * 2)) / 2 + radius,
+    (height - row * (radius * 2)) / 2 + radius,
+  ];
   ctx.save();
   ctx.globalAlpha = 0.8;
-  for (let x = 0; x < row; x++) {
-    for (let y = 0; y < column; y++) {
+  for (let x = 0; x < column; x++) {
+    for (let y = 0; y < row; y++) {
       const p = [
         x * radius * 2 + transform[0],
         y * radius * 2 + transform[1],

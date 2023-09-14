@@ -9,6 +9,7 @@ import drawHeatmap from './draw/drawHeatmap.mjs';
 import drawCluster from './draw/drawCluster.mjs';
 import drawCircle from './draw/drawCircle.mjs';
 import drawGrid from './draw/drawGrid.mjs';
+import drawHexbin from './draw/drawHexbin.mjs';
 
 const pointList = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'data', 'points.json')));
 const trajectory = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'data', 'trajectory.json')));
@@ -126,6 +127,22 @@ drawCircle({
 });
 */
 
+drawHexbin({
+  ctx,
+  center,
+  zoom,
+  radius: 18,
+  coordinates: gcoord.transform(
+    {
+      type: 'MultiPoint',
+      coordinates: pointList.map((d) => [d.coordinate[0], d.coordinate[1]]),
+    },
+    gcoord.WGS84,
+    gcoord.GCJ02,
+  ).coordinates,
+});
+
+/*
 drawGrid({
   ctx,
   center,
@@ -141,7 +158,6 @@ drawGrid({
   ).coordinates,
 });
 
-/*
 drawFromGeoJson({
   ctx,
   center,
