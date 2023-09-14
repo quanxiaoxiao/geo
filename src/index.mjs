@@ -9,7 +9,6 @@ import drawHeatmap from './draw/drawHeatmap.mjs';
 import drawCluster from './draw/drawCluster.mjs';
 import drawCircle from './draw/drawCircle.mjs';
 import drawGrid from './draw/drawGrid.mjs';
-// import generateImage from './generateImage.mjs';
 
 const pointList = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'data', 'points.json')));
 const trajectory = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'data', 'trajectory.json')));
