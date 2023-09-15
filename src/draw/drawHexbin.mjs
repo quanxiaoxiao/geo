@@ -72,7 +72,7 @@ export default ({
     while (x < width + radius) {
       x = j * w;
       const p = [
-        i % 2 === 1 ? x + w * 0.5 : x,
+        (i & 1) ? x + w * 0.5 : x,
         y,
       ];
       const count = index
