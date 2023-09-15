@@ -1,37 +1,10 @@
-import Ajv from 'ajv';
 import _ from 'lodash';
-
-const valid = (data) => {
-  const ajv = new Ajv();
-  return (schema) => ajv.compile(schema)(data);
-};
-
-const schemaWithCoordinate = {
-  type: 'array',
-  items: {
-    type: 'number',
-    minimum: -180,
-    maximum: 180,
-  },
-  minItems: 2,
-  maxItems: 2,
-};
-
-const schemaWithLineStringOrMultiPoint = {
-  type: 'array',
-  items: schemaWithCoordinate,
-  minItems: 1,
-};
-
-const schemaWithPolygon = {
-  type: 'array',
-  minItems: 1,
-  items: {
-    type: 'array',
-    minItems: 1,
-    items: schemaWithCoordinate,
-  },
-};
+import valid from './utils/valid.mjs';
+import {
+  schemaWithCoordinate,
+  schemaWithLineStringOrMultiPoint,
+  schemaWithPolygon,
+} from './schemas.mjs';
 
 const parseData = (data) => {
   const validate = valid(data);
