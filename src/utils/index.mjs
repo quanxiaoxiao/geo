@@ -1,4 +1,6 @@
 import KDBush from 'kdbush';
+import { geoMercator } from 'd3-geo';
+import { TILE_SIZE } from '../constants.mjs';
 
 const { PI } = Math;
 
@@ -19,17 +21,12 @@ export const mercator = ({
   width,
   height,
 }) => {
-  const tileAtCenterX = calcLngAtTileX(center[0], zoom);
-  const tileAtCenterY = calcLatAtTileY(center[1], zoom);
-  const transform = [
-    tileAtCenterX * 256 - width / 2,
-    tileAtCenterY * 256 - height / 2,
-  ];
-  return (coordinate) => {
-    const x = calcLngAtTileX(coordinate[0], zoom) * 256 - transform[0];
-    const y = calcLatAtTileY(coordinate[1], zoom) * 256 - transform[1];
-    return [x, y];
-  };
+  const scale = (2 ** zoom) * TILE_SIZE / Math.PI / 2;
+  const projection = geoMercator()
+    .scale(scale)
+    .center(center)
+    .translate([width / 2, height / 2]);
+  return projection;
 };
 
 export const calcDist = (x1, y1, x2, y2) => {

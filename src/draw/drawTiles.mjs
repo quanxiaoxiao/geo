@@ -1,12 +1,11 @@
 import { loadImage } from '@napi-rs/canvas';
-import { geoMercator } from 'd3-geo';
 import {
   calcLngAtTileX,
   calcLatAtTileY,
+  mercator,
 } from '../utils/index.mjs';
 import fetchTile from '../utils/fetchTile.mjs';
-
-const TILE_SIZE = 256;
+import { TILE_SIZE } from '../constants.mjs';
 
 const generateTiles = ({
   zoom,
@@ -15,11 +14,12 @@ const generateTiles = ({
   height,
 }) => {
   const tileList = [];
-  const scale = (2 ** zoom) * TILE_SIZE / Math.PI / 2;
-  const projection = geoMercator()
-    .scale(scale)
-    .center(center)
-    .translate([width / 2, height / 2]);
+  const projection = mercator({
+    zoom,
+    center,
+    width,
+    height,
+  });
   const bounds = [
     projection.invert([0, 0]),
     projection.invert([width, height]),
