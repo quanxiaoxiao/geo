@@ -8,9 +8,9 @@ export default ({
   coordinates,
   center,
   zoom,
+  fontSize = 14,
 }) => {
   const { width, height } = ctx.canvas;
-  const fontSize = 13;
   const projection = mercator({
     width,
     height,

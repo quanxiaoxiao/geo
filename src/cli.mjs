@@ -1,9 +1,11 @@
 import yargs from 'yargs';
 import _ from 'lodash';
+import gcoord from 'gcoord';
 import { hideBin } from 'yargs/helpers';
 import parseData from './parseData.mjs';
 import valid from './utils/valid.mjs';
 import { schemaWithCoordinate } from './schemas.mjs';
+import draw from './draw/index.mjs';
 
 const argv = yargs(hideBin(process.argv))
   .options({
@@ -27,13 +29,13 @@ const argv = yargs(hideBin(process.argv))
       alias: 'w',
       type: 'number',
       default: 1680,
-      coerce: (arg) => Math.max(Math.min(4680, arg), 128),
+      coerce: (arg) => Math.max(Math.min(8192, arg), 128),
     },
     height: {
       alias: 'h',
       type: 'number',
       default: 1680,
-      coerce: (arg) => Math.max(Math.min(4680, arg), 128),
+      coerce: (arg) => Math.max(Math.min(8192, arg), 128),
     },
     zoom: {
       alias: 'z',
@@ -92,11 +94,11 @@ const argv = yargs(hideBin(process.argv))
 
 const options = {
   tileShow: !argv.hideTile,
-  center: argv.center,
+  center: gcoord.transform(argv.center, gcoord.WGS84, gcoord.GCJ02),
   width: argv.width,
   height: argv.height,
   zoom: argv.zoom,
   data: argv.data,
 };
 
-console.log(options);
+draw(options);
