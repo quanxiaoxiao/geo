@@ -1,7 +1,5 @@
-import {
-  geoPath,
-  geoMercator,
-} from 'd3-geo';
+import { geoPath } from 'd3-geo';
+import { mercator } from '../utils/index.mjs';
 
 /*
 const centroid = geoCentroid(geoJson);
@@ -153,10 +151,13 @@ export default ({
   zoom,
 }) => {
   const { width, height } = ctx.canvas;
-  const projection = geoMercator()
-    .scale((2 ** zoom) * 256 / Math.PI / 2)
-    .center(center)
-    .translate([width / 2, height / 2]);
+  const projection = mercator({
+    zoom,
+    center,
+    width,
+    height,
+  });
+
   draw({
     ctx,
     data,
