@@ -117,6 +117,7 @@ const argv = await yargs(hideBin(process.argv))
     ['geo --data [121.33, 29.66]'],
     ['geo --data [121.33, 29.66] --zoom 16'],
     ['geo --data [121.33, 29.66] --zoom 16 --range 400'],
+    ['geo --data [121.33, 29.66] --center [121.33, 29.66] --zoom 16 --range 400 | geo --data [121.336, 29.657] --center [121.33, 29.66] --zoom 16 --range 400 --hide-tile --layer @-'],
     ['geo --data [121.33, 29.66] --zoom 16 --width 1280 --height 640'],
     ['geo --data [121.33, 29.66] --range 500'],
     ['cat points.json | jq \'map(.coordinate)\' | geo --data @-'],
