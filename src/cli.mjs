@@ -7,12 +7,27 @@ import valid from './utils/valid.mjs';
 import { schemaWithCoordinate } from './schemas.mjs';
 import draw from './draw/index.mjs';
 
-const argv = yargs(hideBin(process.argv))
+const bufList = [];
+
+if (process.argv.slice(2).includes('@-')) {
+  await new Promise((resolve) => {
+    process.stdin.on('data', (chunk) => {
+      bufList.push(chunk);
+    });
+
+    process.stdin.on('end', () => {
+      resolve();
+    });
+  });
+}
+
+const argv = await yargs(hideBin(process.argv))
   .options({
     center: {
       alias: 'c',
+      type: 'string',
       default: '[121.52895, 29.89411]',
-      coerce: (arg) => {
+      coerce: async (arg) => {
         try {
           const data = JSON.parse(arg);
           if (!valid(data)(schemaWithCoordinate)) {
@@ -23,7 +38,6 @@ const argv = yargs(hideBin(process.argv))
           throw new Error('center invalid');
         }
       },
-      type: 'string',
     },
     width: {
       alias: 'w',
@@ -48,20 +62,36 @@ const argv = yargs(hideBin(process.argv))
       type: 'string',
       choices: [
         'location',
+        'hexbin',
+        'heatmap',
+        'cluster',
+        'grid',
         'range',
       ],
     },
     data: {
       alias: 'd',
       type: 'string',
-      coerce: (arg) => {
+      coerce: async (arg) => {
         try {
-          const data = JSON.parse(arg);
+          const data = JSON.parse(arg === '@-' ? Buffer.concat(bufList) : arg);
           const v = parseData(data);
           if (!v) {
             throw new Error('data invalid');
           }
-          return v;
+          if (Array.isArray(data) && v.type === 'LineString') {
+            return {
+              data: {
+                ...v,
+                type: 'MultiPoint',
+              },
+              dataRaw: data,
+            };
+          }
+          return {
+            data: v,
+            dataRaw: data,
+          };
         } catch (error) {
           throw new Error('data invalid');
         }
@@ -71,6 +101,12 @@ const argv = yargs(hideBin(process.argv))
     range: {
       alias: 'r',
       type: 'number',
+      coerce: async (arg) => {
+        if (arg <= 0) {
+          return null;
+        }
+        return arg;
+      },
     },
     'hide-tile': {
       type: 'boolean',
@@ -82,15 +118,11 @@ const argv = yargs(hideBin(process.argv))
     ['geo --data [121.33, 29.66] --zoom 16'],
     ['geo --data [121.33, 29.66] --zoom 16 --range 400'],
     ['geo --data [121.33, 29.66] --zoom 16 --width 1280 --height 640'],
+    ['geo --data [121.33, 29.66] --range 500'],
+    ['cat points.json | jq \'map(.coordinate)\' | geo --data @-'],
+    ['cat points.json | jq \'map(.coordinate)\' | geo --data @- --type hexbin'],
   ])
   .parse();
-
-// geo --data [121.33, 29.66] --zoom 16
-// geo --data [121.33, 29.66] --hide-tile
-// geo --data [121.33, 29.66]
-// geo --data [121.33, 29.66]  --range 300
-// geo --data { type: 'MultiPoint', coordinates: [] }
-// geo --data [[121.33, 29.66], [121.33, 29.66]] --type grid
 
 const options = {
   tileShow: !argv.hideTile,
@@ -98,7 +130,20 @@ const options = {
   width: argv.width,
   height: argv.height,
   zoom: argv.zoom,
-  data: argv.data,
+  type: argv.type,
+  range: argv.range,
+  data: gcoord.transform(argv.data.data, gcoord.WGS84, gcoord.GCJ02),
 };
+
+if (Array.isArray(argv.data.dataRaw) && argv.data.data.type === 'Point') {
+  if (argv.range) {
+    options.type = 'range';
+  } else {
+    options.type = 'location';
+  }
+  if (!process.argv.slice(2).some((s) => s === '--center' || s === '-c')) {
+    options.center = options.data.coordinates;
+  }
+}
 
 draw(options);
