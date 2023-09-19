@@ -1,4 +1,5 @@
 import { loadImage } from '@napi-rs/canvas';
+import { Semaphore } from '@quanxiaoxiao/utils';
 import {
   calcLngAtTileX,
   calcLatAtTileY,
@@ -69,18 +70,27 @@ export default async ({
     height,
   });
 
-  await tileList.reduce(async (acc, cur) => {
-    await acc;
-    const imageBuf = await fetchTile(cur.data[0], cur.data[1], cur.data[2]);
-    const image = await loadImage(imageBuf);
-    ctx.drawImage(
-      image,
-      cur.x,
-      cur.y,
-      cur.width,
-      cur.height,
-    );
-  }, Promise.resolve);
+  await new Promise((resolve) => {
+    const sem = new Semaphore(32, () => {
+      resolve();
+    });
+
+    tileList.forEach((tileItem) => {
+      sem.acquire(async () => {
+        const imageBuf = await fetchTile(tileItem.data[0], tileItem.data[1], tileItem.data[2]);
+        const image = await loadImage(imageBuf);
+        ctx.drawImage(
+          image,
+          tileItem.x,
+          tileItem.y,
+          tileItem.width,
+          tileItem.height,
+        );
+        sem.release();
+      });
+    });
+  });
+
   if (debug) {
     for (let i = 0; i < tileList.length; i++) {
       const tileItem = tileList[i];
