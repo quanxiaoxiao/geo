@@ -150,8 +150,7 @@ const options = {
   zoom: argv.zoom,
   type: argv.type,
   range: argv.range,
-  data: argv.data.data,
-  // data: gcoord.transform(argv.data.data, gcoord.WGS84, gcoord.GCJ02),
+  data: gcoord.transform(argv.data.data, gcoord.WGS84, gcoord.GCJ02),
 };
 
 const isCenterSet = process.argv.slice(2).some((s) => s === '--center' || s === '-c');
