@@ -2,12 +2,16 @@ import yargs from 'yargs';
 import _ from 'lodash';
 import gcoord from 'gcoord';
 import { hideBin } from 'yargs/helpers';
+import config from './config.mjs';
 import parseData from './parseData.mjs';
 import valid from './utils/valid.mjs';
 import { schemaWithCoordinate } from './schemas.mjs';
 import draw from './draw/index.mjs';
+import generateOperationsFromConfig from './generateOperationsFromConfig.mjs';
 
 const bufList = [];
+
+const defaultOptions = generateOperationsFromConfig();
 
 if (process.argv.slice(2).includes('@-')) {
   await new Promise((resolve) => {
@@ -23,10 +27,11 @@ if (process.argv.slice(2).includes('@-')) {
 
 const argv = await yargs(hideBin(process.argv))
   .options({
+    ...defaultOptions,
     center: {
       alias: 'c',
       type: 'string',
-      default: '[121.52895, 29.89411]',
+      default: `[${config.center.join(',')}]`,
       coerce: async (arg) => {
         try {
           const data = JSON.parse(arg);
@@ -42,20 +47,20 @@ const argv = await yargs(hideBin(process.argv))
     width: {
       alias: 'w',
       type: 'number',
-      default: 1680,
+      default: config.width,
       coerce: (arg) => Math.max(Math.min(8192, arg), 128),
     },
     height: {
       alias: 'h',
       type: 'number',
-      default: 1680,
+      default: config.height,
       coerce: (arg) => Math.max(Math.min(8192, arg), 128),
     },
     zoom: {
       alias: 'z',
       type: 'number',
       choices: _.times(16).map((n) => n + 3),
-      default: 12,
+      default: config.zoom,
     },
     type: {
       alias: 't',
@@ -108,10 +113,6 @@ const argv = await yargs(hideBin(process.argv))
         return arg;
       },
     },
-    'hide-tile': {
-      type: 'boolean',
-      default: false,
-    },
   })
   .example([
     ['geo --data [121.33, 29.66]'],
@@ -126,7 +127,19 @@ const argv = await yargs(hideBin(process.argv))
   .parse();
 
 const options = {
-  tileShow: !argv.hideTile,
+  ...Object
+    .keys(defaultOptions)
+    .reduce((acc, cur) => {
+      const key = cur.replace(/-([a-z])/g, (a, b) => b.toUpperCase());
+      const v = argv[key];
+      if (v == null) {
+        return acc;
+      }
+      return {
+        ...acc,
+        [key]: v,
+      };
+    }, {}),
   center: gcoord.transform(argv.center, gcoord.WGS84, gcoord.GCJ02),
   width: argv.width,
   height: argv.height,

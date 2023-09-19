@@ -1,5 +1,5 @@
-import path from 'node:path';
 import fs from 'node:fs';
+import path from 'node:path';
 import createCanvas from '../createCanvas.mjs';
 import drawTiles from './drawTiles.mjs';
 import drawFromGeoJson from './drawFromGeoJson.mjs';
@@ -19,7 +19,7 @@ export default async ({
   ...options
 }) => {
   const ctx = createCanvas(width, height);
-  if (options.tileShow) {
+  if (!options.hideTile) {
     await drawTiles({
       ctx,
       zoom,
@@ -33,6 +33,7 @@ export default async ({
         zoom,
         coordinate: data.coordinates,
         center,
+        options,
       });
       break;
     case 'range':
@@ -100,5 +101,6 @@ export default async ({
   }
   const buf = ctx.canvas.toBuffer('image/png');
 
+  // process.stdout.write(buf);
   fs.writeFileSync(path.resolve(process.cwd(), 'cqq.png'), buf);
 };
