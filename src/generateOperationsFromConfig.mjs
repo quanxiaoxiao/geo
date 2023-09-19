@@ -24,7 +24,18 @@ const walk = (obj, prefix) => {
     const keyName = prefix
       ? `${prefix}-${convertNameToSnameStyle(key)}`
       : convertNameToSnameStyle(key);
-    if (['string', 'boolean', 'number'].includes(type)) {
+    if (type === 'number') {
+      result[keyName] = {
+        type,
+        default: value,
+        coerce: async (arg) => {
+          if (arg == null || arg < 0) {
+            return 0;
+          }
+          return arg;
+        },
+      };
+    } else if (type === 'string' || type === 'boolean') {
       result[keyName] = {
         type,
         default: value,

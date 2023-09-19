@@ -47,9 +47,10 @@ const drawLineString = ({
   ctx,
   projection,
   coordinates,
+  options,
 }) => {
-  ctx.strokeStyle = '#f00';
-  ctx.lineWidth = 3;
+  ctx.strokeStyle = options.lineStringStrokeColor;
+  ctx.lineWidth = options.lineStringStrokeWidth;
   ctx.beginPath();
   geoPath()
     .projection(projection)
@@ -79,6 +80,7 @@ const drawShape = ({
   type,
   projection,
   coordinates,
+  options,
 }) => {
   switch (type) {
     case 'Point':
@@ -86,6 +88,7 @@ const drawShape = ({
         ctx,
         projection,
         coordinate: coordinates,
+        options,
       });
       break;
     case 'Polygon':
@@ -93,6 +96,7 @@ const drawShape = ({
         ctx,
         projection,
         coordinates,
+        options,
       });
       break;
     case 'LineString':
@@ -100,6 +104,7 @@ const drawShape = ({
         ctx,
         projection,
         coordinates,
+        options,
       });
       break;
     default:
@@ -111,6 +116,7 @@ const draw = ({
   ctx,
   data,
   projection,
+  options,
 }) => {
   if (data.type === 'GeometryCollection') {
     const { geometries } = data;
@@ -120,6 +126,7 @@ const draw = ({
         ctx,
         data: geometry,
         projection,
+        options,
       });
     }
   } else if (types.includes(data.type)) {
@@ -129,6 +136,7 @@ const draw = ({
       projection,
       properties: data.properties || {},
       coordinates: data.coordinates,
+      options,
     });
   } else if (multipleTypes.includes(data.type)) {
     const type = data.type.match(/Multi(\w+)/)[1];
@@ -139,6 +147,7 @@ const draw = ({
         projection,
         properties: data.properties || {},
         coordinates: data.coordinates[i],
+        options,
       });
     }
   }
@@ -149,6 +158,7 @@ export default ({
   data,
   center,
   zoom,
+  options,
 }) => {
   const { width, height } = ctx.canvas;
   const projection = mercator({
@@ -162,5 +172,6 @@ export default ({
     ctx,
     data,
     projection,
+    options,
   });
 };

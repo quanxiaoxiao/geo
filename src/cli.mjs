@@ -1,6 +1,10 @@
 import yargs from 'yargs';
 import _ from 'lodash';
 import gcoord from 'gcoord';
+import {
+  geoCentroid,
+  geoBounds,
+} from 'd3-geo';
 import { hideBin } from 'yargs/helpers';
 import config from './config.mjs';
 import parseData from './parseData.mjs';
@@ -146,17 +150,48 @@ const options = {
   zoom: argv.zoom,
   type: argv.type,
   range: argv.range,
-  data: gcoord.transform(argv.data.data, gcoord.WGS84, gcoord.GCJ02),
+  data: argv.data.data,
+  // data: gcoord.transform(argv.data.data, gcoord.WGS84, gcoord.GCJ02),
 };
 
-if (Array.isArray(argv.data.dataRaw) && argv.data.data.type === 'Point') {
-  if (argv.range) {
-    options.type = 'range';
-  } else {
-    options.type = 'location';
+const isCenterSet = process.argv.slice(2).some((s) => s === '--center' || s === '-c');
+const isSizeSet = process.argv.slice(2).some((s) => s === '--width' || s === '-w' || s === '--height' || s === '-h');
+
+if (Array.isArray(argv.data.dataRaw)) {
+  if (options.data.type === 'Point') {
+    if (argv.range) {
+      options.type = 'range';
+    } else {
+      options.type = 'location';
+    }
+    if (!isCenterSet) {
+      options.center = options.data.coordinates;
+    }
   }
-  if (!process.argv.slice(2).some((s) => s === '--center' || s === '-c')) {
-    options.center = options.data.coordinates;
+} else if ([
+  'MultiLineString',
+  'MultiPoint',
+  'MultiPolygon',
+  'LineString',
+  'Polygon',
+].includes(options.data.type)) {
+  if (!isCenterSet) {
+    const center = geoCentroid(options.data);
+    const bounds = geoBounds(options.data);
+    const diffX = Math.abs(bounds[1][0] - bounds[0][0]);
+    const diffY = Math.abs(bounds[1][1] - bounds[0][1]);
+    if (!isSizeSet) {
+      const ratio = diffX / diffY;
+      options.width = 1280;
+      options.height = options.width / ratio;
+    }
+    const scale = 1 / Math.max(
+      diffX * Math.PI / 180 / options.width,
+      diffY * Math.PI / 180 / options.height,
+    );
+    const zoom = Math.max(10, Math.min(Math.floor(Math.log(scale / 40.5) / Math.LN2), 18));
+    options.center = center;
+    options.zoom = zoom;
   }
 }
 

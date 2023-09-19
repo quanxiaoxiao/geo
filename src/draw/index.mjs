@@ -1,5 +1,3 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import createCanvas from '../createCanvas.mjs';
 import drawTiles from './drawTiles.mjs';
 import drawFromGeoJson from './drawFromGeoJson.mjs';
@@ -97,10 +95,10 @@ export default async ({
         zoom,
         data,
         center,
+        options,
       });
   }
   const buf = ctx.canvas.toBuffer('image/png');
 
-  // process.stdout.write(buf);
-  fs.writeFileSync(path.resolve(process.cwd(), 'cqq.png'), buf);
+  process.stdout.write(buf);
 };
