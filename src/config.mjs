@@ -9,6 +9,18 @@ export default {
     domain: [1, 128],
     colors: ['yellow', 'red', 'black'],
   },
+  cluster: {
+    fillColor: '#f00',
+    textColor: '#fff',
+    point: {
+      fillColor: '#00f',
+      radius: 5,
+    },
+    textSize: 14,
+    radius: 120,
+    range: [30, 60],
+    domain: [4, 200],
+  },
   point: {
     fillColor: '#f00',
     radius: 6,

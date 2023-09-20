@@ -1,16 +1,6 @@
 import { geoPath } from 'd3-geo';
 import { mercator } from '../utils/index.mjs';
 
-/*
-const centroid = geoCentroid(geoJson);
-const bounds = geoBounds(geoJson);
-const scale = 1 / Math.min(
-  (bounds[1][0] - bounds[0][0]) * Math.PI / 180 / width,
-  (bounds[1][1] - bounds[0][1]) * Math.PI / 180 / height,
-);
-const zoom = Math.max(10, Math.min(Math.floor(Math.log(scale / 40.5) / Math.LN2), 18));
-*/
-
 const types = [
   'Point',
   'Polygon',
