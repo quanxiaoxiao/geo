@@ -3,6 +3,7 @@ import chroma from 'chroma-js';
 import {
   mercator,
   makeIndex,
+  calcPixelWidthByDistance,
 } from '../utils/index.mjs';
 
 const thirdPi = Math.PI / 3;
@@ -46,7 +47,7 @@ export default ({
   coordinates,
   options,
 }) => {
-  const radius = options.hexbinRadius;
+  const radius = calcPixelWidthByDistance(options.hexbinRadius, zoom, center[1]);
   const { width, height } = ctx.canvas;
   const projection = mercator({
     width,

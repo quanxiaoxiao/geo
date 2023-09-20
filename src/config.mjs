@@ -9,6 +9,16 @@ export default {
     domain: [1, 128],
     colors: ['yellow', 'red', 'black'],
   },
+  heatmap: {
+    radius: 300,
+    colors: [
+      'rgb(0, 0, 255)',
+      'rgb(0, 255, 0)',
+      'yellow',
+      'rgb(255, 0, 0)',
+    ],
+    opacity: 0.06,
+  },
   cluster: {
     fillColor: '#f00',
     textColor: '#fff',
@@ -38,7 +48,7 @@ export default {
     shadowColor: '#000',
   },
   hexbin: {
-    radius: 16,
+    radius: 600,
     opacity: 0.8,
     domain: [1, 128],
     colors: ['yellow', 'red', 'black'],

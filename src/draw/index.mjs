@@ -50,6 +50,7 @@ export default async ({
           center,
           zoom,
           coordinates: data.coordinates,
+          options,
         });
       }
       break;

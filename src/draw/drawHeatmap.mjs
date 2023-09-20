@@ -1,5 +1,8 @@
 import { createCanvas } from '@napi-rs/canvas';
-import { mercator } from '../utils/index.mjs';
+import {
+  mercator,
+  calcPixelWidthByDistance,
+} from '../utils/index.mjs';
 
 const createPaletten = () => {
   const canvas = createCanvas(256, 1);
@@ -20,12 +23,14 @@ const generateDesityImg = ({
   width,
   height,
   projection,
+  center,
+  zoom,
+  options,
 }) => {
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext('2d');
-  const opacity = 0.08;
-  const r = 7.2;
-  ctx.globalAlpha = opacity;
+  const r = calcPixelWidthByDistance(options.heatmapRadius, zoom, center[1]);
+  ctx.globalAlpha = options.heatmapOpacity;
   for (let i = 0; i < coordinates.length; i++) {
     const coordinate = coordinates[i];
     const [x, y] = projection(coordinate);
@@ -45,6 +50,7 @@ export default ({
   coordinates,
   center,
   zoom,
+  options,
 }) => {
   const { width, height } = ctx.canvas;
   const projection = mercator({
@@ -53,12 +59,15 @@ export default ({
     center,
     zoom,
   });
-  const paletten = createPaletten();
+  const paletten = createPaletten(options);
   const img = generateDesityImg({
     coordinates,
     projection,
     width,
     height,
+    center,
+    zoom,
+    options,
   });
   const imgData = img.data;
   for (let y = 0; y < height; y++) {

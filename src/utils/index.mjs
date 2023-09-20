@@ -2,6 +2,8 @@ import KDBush from 'kdbush';
 import { geoMercator } from 'd3-geo';
 import { TILE_SIZE } from '../constants.mjs';
 
+const EARTH_RADIUS = 6378137.0;
+
 const { PI } = Math;
 
 export const calcLngAtTileX = (lng, zoom) => (lng + 180) / 360 * (2 ** zoom);
@@ -69,4 +71,11 @@ export const getNeartest = (list, coordinate) => {
     return null;
   }
   return list[index];
+};
+
+export const calcPixelWidthByDistance = (dist, zoom, lat = 0) => {
+  const r = Math.cos(lat * Math.PI / 180) * EARTH_RADIUS;
+  const w = Math.PI * 2 * r;
+  const s = dist / w;
+  return (2 ** zoom) * 256 * s;
 };
