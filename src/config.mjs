@@ -11,7 +11,7 @@ export default {
   },
   lineString: {
     strokeColor: '#f00',
-    strokeWidth: 4,
+    strokeWidth: 6,
   },
   location: {
     radius: 12,
@@ -22,7 +22,8 @@ export default {
     shadowColor: '#000',
   },
   hexbin: {
-    radius: 8,
+    radius: 16,
+    opacity: 0.8,
     domain: [1, 128],
     colors: ['yellow', 'red', 'black'],
   },

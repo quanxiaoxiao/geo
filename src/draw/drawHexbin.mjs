@@ -43,9 +43,10 @@ export default ({
   ctx,
   center,
   zoom,
-  radius,
   coordinates,
+  options,
 }) => {
+  const radius = options.hexbinRadius;
   const { width, height } = ctx.canvas;
   const projection = mercator({
     width,
@@ -54,8 +55,8 @@ export default ({
     zoom,
   });
   const colorScale = scale
-    .scaleSequential((t) => chroma.scale(['yellow', 'red', 'black']).domain([0, 1])(t).hex())
-    .domain([1, 128])
+    .scaleSequential((t) => chroma.scale(options.hexbinColors).domain([0, 1])(t).hex())
+    .domain(options.hexbinDomain)
     .clamp(true);
   const arr = coordinates.map((coordinate) => projection(coordinate));
   const index = makeIndex(arr);
@@ -64,7 +65,7 @@ export default ({
   let y = h * 0.5;
   let i = 0;
   ctx.save();
-  ctx.globalAlpha = 0.8;
+  ctx.globalAlpha = options.hexbinOpacity;
   while (y < height + radius) {
     y = i * h;
     let x = w * 0.5;

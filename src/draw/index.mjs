@@ -60,8 +60,8 @@ export default async ({
           ctx,
           center,
           zoom,
-          radius: 8,
           coordinates: data.coordinates,
+          options,
         });
       }
       break;

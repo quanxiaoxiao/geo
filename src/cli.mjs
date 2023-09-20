@@ -188,7 +188,7 @@ if (Array.isArray(argv.data.dataRaw)) {
       diffX * Math.PI / 180 / options.width,
       diffY * Math.PI / 180 / options.height,
     );
-    const zoom = Math.max(10, Math.min(Math.floor(Math.log(scale / 40.5) / Math.LN2), 18));
+    const zoom = Math.max(10, Math.min(Math.floor(Math.log(scale / 40.5) / Math.LN2) - 1, 18));
     options.center = center;
     options.zoom = zoom;
   }
