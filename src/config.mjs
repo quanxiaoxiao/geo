@@ -9,6 +9,10 @@ export default {
     domain: [1, 128],
     colors: ['yellow', 'red', 'black'],
   },
+  point: {
+    fillColor: '#f00',
+    radius: 6,
+  },
   lineString: {
     strokeColor: '#f00',
     strokeWidth: 6,

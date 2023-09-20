@@ -66,10 +66,11 @@ const drawPoint = ({
   ctx,
   projection,
   coordinate,
+  options,
 }) => {
   const [x, y] = projection(coordinate);
-  ctx.fillStyle = '#f0f';
-  const r = 3;
+  ctx.fillStyle = options.pointFillColor;
+  const r = options.pointRadius;
   ctx.beginPath();
   ctx.arc(x, y, r, 0, Math.PI * 2);
   ctx.fill();
