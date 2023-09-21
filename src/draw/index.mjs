@@ -7,6 +7,7 @@ import drawHeatmap from './drawHeatmap.mjs';
 import drawCluster from './drawCluster.mjs';
 import drawHexbin from './drawHexbin.mjs';
 import drawGrid from './drawGrid.mjs';
+import drawScale from './drawScale.mjs';
 
 export default async ({
   width,
@@ -100,6 +101,11 @@ export default async ({
         options,
       });
   }
+  drawScale({
+    ctx,
+    zoom,
+    center,
+  });
   const buf = ctx.canvas.toBuffer('image/png');
 
   process.stdout.write(buf);

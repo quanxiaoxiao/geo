@@ -1,19 +1,20 @@
 import KDBush from 'kdbush';
 import { geoMercator } from 'd3-geo';
-import { TILE_SIZE } from '../constants.mjs';
-
-const EARTH_RADIUS = 6378137.0;
+import {
+  TILE_SIZE,
+  EARTH_RADIUS,
+} from '../constants.mjs';
 
 const { PI } = Math;
 
-export const calcLngAtTileX = (lng, zoom) => (lng + 180) / 360 * (2 ** zoom);
+export const calcLngAtTileX = (lng, zoom) => ((lng + 180) % 360) / 360 * (2 ** zoom);
 
 export const calcLatAtTileY = (lat, zoom) => (1 - Math.log(Math.tan(lat * PI / 180) + 1 / Math.cos(lat * PI / 180)) / PI) / 2 * (2 ** zoom);
 
-export const calcTileXAtLng = (x, z) => x / (2 ** z) * 360 - 180;
+export const calcTileXAtLng = (lng, z) => lng / (2 ** z) * 360 - 180;
 
-export const calcTileYAtLat = (y, z) => {
-  const n = PI - 2 * PI * y / 2 ** z;
+export const calcTileYAtLat = (lat, z) => {
+  const n = PI - 2 * PI * lat / (2 ** z);
   return (180 / PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
 };
 
@@ -23,7 +24,7 @@ export const mercator = ({
   width,
   height,
 }) => {
-  const scale = (2 ** zoom) * TILE_SIZE / Math.PI / 2;
+  const scale = (2 ** zoom) * TILE_SIZE / (Math.PI * 2);
   const projection = geoMercator()
     .scale(scale)
     .center(center)
@@ -74,8 +75,8 @@ export const getNeartest = (list, coordinate) => {
 };
 
 export const calcPixelWidthByDistance = (dist, zoom, lat = 0) => {
-  const r = Math.cos(lat * Math.PI / 180) * EARTH_RADIUS;
-  const w = Math.PI * 2 * r;
+  const r = Math.cos(lat * PI / 180) * EARTH_RADIUS;
+  const w = 2 * r * PI;
   const s = dist / w;
   return (2 ** zoom) * 256 * s;
 };
