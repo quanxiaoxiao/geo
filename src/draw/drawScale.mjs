@@ -19,6 +19,7 @@ export default ({
   ctx,
   center,
   zoom,
+  options,
 }) => {
   const { width, height } = ctx.canvas;
   const point = [32, height - 32];
@@ -32,12 +33,12 @@ export default ({
   if (dist) {
     const coordinate = projection.invert(point);
     const scaleWidth = calcPixelWidthByDistance(dist, zoom, coordinate[1]);
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.fillStyle = options.scaleBackground;
     const h = 32;
     ctx.beginPath();
     ctx.fillRect(point[0] - 2, point[1] - h + 8, scaleWidth + 4, h);
 
-    ctx.strokeStyle = '#000';
+    ctx.strokeStyle = options.scaleStrokeColor;
     ctx.beginPath();
     ctx.moveTo(point[0], point[1] - 4);
     ctx.lineTo(point[0], point[1] + 4);
@@ -46,8 +47,8 @@ export default ({
     ctx.moveTo(point[0] + scaleWidth, point[1] - 4);
     ctx.lineTo(point[0] + scaleWidth, point[1] + 4);
     ctx.stroke();
-    ctx.fillStyle = '#000';
-    ctx.font = 'bold 14px serif';
+    ctx.fillStyle = options.scaleTextColor;
+    ctx.font = `bold ${options.scaleTextSize}px serif`;
     ctx.beginPath();
     const text = dist >= 1000 ? `${dist / 1000}km` : `${dist}m`;
     const metrics = ctx.measureText(text);

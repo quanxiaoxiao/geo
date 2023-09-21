@@ -18,11 +18,12 @@ export default async ({
   ...options
 }) => {
   const ctx = createCanvas(width, height);
-  if (!options.hideTile) {
+  if (!options.tileHide) {
     await drawTiles({
       ctx,
       zoom,
       center,
+      options,
     });
   }
   switch (options.type) {
@@ -101,11 +102,14 @@ export default async ({
         options,
       });
   }
-  drawScale({
-    ctx,
-    zoom,
-    center,
-  });
+  if (!options.scaleHide) {
+    drawScale({
+      ctx,
+      zoom,
+      center,
+      options,
+    });
+  }
   const buf = ctx.canvas.toBuffer('image/png');
 
   process.stdout.write(buf);

@@ -3,7 +3,20 @@ export default {
   width: 1680,
   height: 1680,
   zoom: 12,
-  hideTile: false,
+  tile: {
+    hide: false,
+    debug: false,
+    background: '#FCF9F2',
+  },
+  scale: {
+    hide: false,
+    background: 'rgba(255, 255, 255, 0.2)',
+    strokeColor: '#000',
+    text: {
+      size: 14,
+      color: '#000',
+    },
+  },
   grid: {
     radius: 8,
     domain: [1, 128],

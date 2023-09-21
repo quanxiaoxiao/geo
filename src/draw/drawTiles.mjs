@@ -59,9 +59,13 @@ export default async ({
   ctx,
   center,
   zoom,
-  debug,
+  options,
 }) => {
   const { width, height } = ctx.canvas;
+
+  ctx.fillStyle = options.tileBackground;
+  ctx.beginPath();
+  ctx.fillRect(0, 0, width, height);
 
   const tileList = generateTiles({
     zoom,
@@ -91,7 +95,7 @@ export default async ({
     });
   });
 
-  if (debug) {
+  if (options.tileDebug) {
     for (let i = 0; i < tileList.length; i++) {
       const tileItem = tileList[i];
       ctx.beginPath();
