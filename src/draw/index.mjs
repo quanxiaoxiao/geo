@@ -43,6 +43,7 @@ export default async ({
         center,
         coordinate: data.coordinates,
         radius: options.range,
+        options,
       });
       break;
     case 'heatmap': {

@@ -7,6 +7,7 @@ export default ({
   coordinate,
   zoom,
   radius,
+  options,
 }) => {
   const { width, height } = ctx.canvas;
   const projection = mercator({
@@ -16,10 +17,14 @@ export default ({
     zoom,
   });
   const { coordinates: [coordinates] } = circleToPolygon(coordinate, radius, {
-    numberOfEdges: 124,
+    numberOfEdges: 128,
   });
-  ctx.fillStyle = 'rgba(0, 0, 233, 0.8)';
-  ctx.strokeStyle = '#000';
+  ctx.fillStyle = options.circleFillColor;
+  if (options.circleStrokeWidth) {
+    ctx.strokeStyle = options.circleStrokeColor;
+    ctx.lineWidth = options.circleStrokeWidth;
+  }
+  ctx.save();
   ctx.beginPath();
   for (let i = 0; i < coordinates.length; i++) {
     const [x, y] = projection(coordinates[i]);
@@ -30,6 +35,16 @@ export default ({
     }
   }
   ctx.closePath();
-  ctx.stroke();
   ctx.fill();
+  if (options.circleStrokeWidth) {
+    ctx.stroke();
+  }
+  ctx.restore();
+  if (options.circlePointRadius) {
+    ctx.fillStyle = options.circlePointFillColor;
+    const [x, y] = projection(center);
+    ctx.beginPath();
+    ctx.arc(x, y, options.circlePointRadius, 0, Math.PI * 2);
+    ctx.fill();
+  }
 };

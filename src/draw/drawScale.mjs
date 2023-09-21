@@ -30,11 +30,12 @@ export default ({
     zoom,
   });
   const dist = map[zoom];
+  const fontSize = options.scaleTextSize;
   if (dist) {
     const coordinate = projection.invert(point);
     const scaleWidth = calcPixelWidthByDistance(dist, zoom, coordinate[1]);
     ctx.fillStyle = options.scaleBackground;
-    const h = 32;
+    const h = fontSize * 2;
     ctx.beginPath();
     ctx.fillRect(point[0] - 2, point[1] - h + 8, scaleWidth + 4, h);
 
@@ -48,7 +49,7 @@ export default ({
     ctx.lineTo(point[0] + scaleWidth, point[1] + 4);
     ctx.stroke();
     ctx.fillStyle = options.scaleTextColor;
-    ctx.font = `bold ${options.scaleTextSize}px serif`;
+    ctx.font = `bold ${fontSize}px serif`;
     ctx.beginPath();
     const text = dist >= 1000 ? `${dist / 1000}km` : `${dist}m`;
     const metrics = ctx.measureText(text);

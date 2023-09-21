@@ -17,6 +17,15 @@ export default {
       color: '#000',
     },
   },
+  circle: {
+    strokeColor: '#f00',
+    fillColor: 'rgba(255, 0, 0, 0.2)',
+    strokeWidth: 1,
+    point: {
+      radius: 6,
+      fillColor: '#00f',
+    },
+  },
   grid: {
     radius: 8,
     domain: [1, 128],

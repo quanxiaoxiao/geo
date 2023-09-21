@@ -40,3 +40,9 @@ track.png
 ```
 
 ![](./assets/images/track.png)
+
+```shell
+$ geo --data '[121.486537, 29.884145]' --zoom 16 --range 800 > circle.png
+```
+
+![](./assets/images/circle.png)
