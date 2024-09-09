@@ -101,8 +101,8 @@ const argv = await yargs(hideBin(process.argv))
             data: v,
             dataRaw: data,
           };
-        } catch (error) { // eslint-disable-line
-          throw new Error('data invalid');
+        } catch (error) {
+          throw new Error(error.message);
         }
       },
       demandOption: true,

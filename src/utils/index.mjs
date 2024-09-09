@@ -1,3 +1,4 @@
+import assert from 'node:assert';
 import KDBush from 'kdbush';
 import { geoMercator } from 'd3-geo';
 import {
@@ -12,6 +13,29 @@ export const calcLngAtTileX = (lng, zoom) => ((lng + 180) % 360) / 360 * (2 ** z
 export const calcLatAtTileY = (lat, zoom) => (1 - Math.log(Math.tan(lat * PI / 180) + 1 / Math.cos(lat * PI / 180)) / PI) / 2 * (2 ** zoom);
 
 export const calcTileXAtLng = (lng, z) => lng / (2 ** z) * 360 - 180;
+
+export const isPointInChina = (coordinate) => {
+  const [lng, lat] = coordinate;
+  assert(typeof lng === 'number' && typeof lat === 'number');
+  const bbox = [
+    [73.6753792663, 18.197700914],
+    [135.026311477, 53.4588044297],
+  ];
+  if (lng < bbox[0][0]) {
+    return false;
+  }
+  if (lng > bbox[1][0]) {
+    return false;
+  }
+  if (lat < bbox[0][1]) {
+    return false;
+  }
+  if (lat > bbox[1][1]) {
+    return false;
+  }
+  return true;
+};
+
 
 export const calcTileYAtLat = (lat, z) => {
   const n = PI - 2 * PI * lat / (2 ** z);
@@ -80,3 +104,54 @@ export const calcPixelWidthByDistance = (dist, zoom, lat = 0) => {
   const s = dist / w;
   return (2 ** zoom) * 256 * s;
 };
+
+export const isPointInCoordinates = (point, vs) => {
+  const x = point[0];
+  const y = point[1];
+
+  assert(typeof x === 'number' && typeof y === 'number');
+
+  let inside = false;
+  for (let i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+    const xi = vs[i][0];
+    const yi = vs[i][1];
+    const xj = vs[j][0];
+    const yj = vs[j][1];
+
+    const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    if (intersect) {
+      inside = !inside;
+    }
+  }
+  return inside;
+};
+
+
+export const getBoundsByPolygon = (polygon) => {
+  let x1 = -Infinity;
+  let y1 = -Infinity;
+  let x2 = Infinity;
+  let y2 = Infinity;
+  for (let i = 0; i < polygon.length; i++) {
+    const coordinates = polygon[i];
+    for (let j = 0; j < coordinates.length; j++) {
+      const coordinate = coordinates[j];
+      const [lng, lat] = coordinate;
+      if (lng > x1) {
+        x1 = lng;
+      }
+      if (lng < x2) {
+        x2 = lng;
+      }
+      if (lat > y1) {
+        y1 = lat;
+      }
+      if (lat < y2) {
+        y2 = lat;
+      }
+    }
+  }
+  assert(x1 !== -Infinity && x2 !== Infinity && y1 !== -Infinity && y2 !== Infinity);
+  return [[x1, y2], [x2, y1]];
+};
+

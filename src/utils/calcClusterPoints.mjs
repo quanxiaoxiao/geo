@@ -1,8 +1,9 @@
-import { randomUUID } from 'node:crypto';
+import assert from 'node:assert';
 import {
   calcDist,
   makeIndex,
 } from './index.mjs';
+import calcCenter from './calcCenter.mjs';
 
 const PRECISION = 1000;
 const EARTH_RADIUS = 6371 * 1000;
@@ -30,22 +31,28 @@ const calcClusterPoints = ({
   list,
   radius,
   minSize,
-  bounds,
+  bbox = [
+    [120.8629336227, 28.85623288],
+    [122.27497, 30.491992],
+  ],
 }) => {
   const index = makeIndex(list, (d) => d.coordinate);
-  const x1 = Math.floor(bounds[0][0] * PRECISION);
-  const y1 = Math.ceil(bounds[0][1] * PRECISION);
-  const x2 = Math.ceil(bounds[1][0] * PRECISION);
-  const y2 = Math.floor(bounds[1][1] * PRECISION);
+  const x1 = Math.floor(bbox[0][0] * PRECISION);
+  const y1 = Math.ceil(bbox[0][1] * PRECISION);
+  const x2 = Math.ceil(bbox[1][0] * PRECISION);
+  const y2 = Math.floor(bbox[1][1] * PRECISION);
+  assert(x1 < x2);
+  assert(y1 < y2);
   const clusterList = [];
   const r = radius / (Math.PI * 2 * EARTH_RADIUS) * 360;
+  const rr = r * 0.68;
   for (let i = x1; i < x2; i++) {
-    for (let j = y2; j < y1; j++) {
+    for (let j = y1; j < y2; j++) {
       const lng = i / PRECISION;
       const lat = j / PRECISION;
-      const result = index.within(lng, lat, r);
+      const result = index.within(lng, lat, rr);
       const size = result.length;
-      if (size > minSize) {
+      if (size >= minSize) {
         clusterList.push({
           x: i,
           y: j,
@@ -72,7 +79,6 @@ const calcClusterPoints = ({
     const clusterItem = clusterList[i];
     if (!excludeList.includes(i)) {
       result.push({
-        uuid: randomUUID(),
         coordinate: clusterItem.coordinate,
         radius: Math.max(...clusterItem.list.map((n) => calcDist(
           clusterItem.coordinate[0],
@@ -81,10 +87,31 @@ const calcClusterPoints = ({
           list[n].coordinate[1],
         ))),
       });
-      excludeList.push(...clusterIndex.within(clusterItem.coordinate[0], clusterItem.coordinate[1], r));
+      excludeList.push(...clusterIndex.within(clusterItem.coordinate[0], clusterItem.coordinate[1], rr));
     }
   }
-  return filterSafeDistance(result);
+  const rangeList = filterSafeDistance(result);
+  const dataList = [];
+  for (let i = 0; i < rangeList.length; i++) {
+    const rangeItem = rangeList[i];
+    const arr = index
+      .within(rangeItem.coordinate[0], rangeItem.coordinate[1], r)
+      .map((n) => list[n]);
+    const center = calcCenter(arr);
+    if (center) {
+      const pointList = index.within(center[0], center[1], r).map((n) => list[n]);
+      const ii = pointList.length;
+      if (ii >= minSize) {
+        dataList.push({
+          coordinate: center,
+          r: rr,
+          radius,
+          list: pointList,
+        });
+      }
+    }
+  }
+  return dataList;
 };
 
 export default calcClusterPoints;
