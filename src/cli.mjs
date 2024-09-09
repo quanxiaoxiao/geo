@@ -43,7 +43,7 @@ const argv = await yargs(hideBin(process.argv))
             throw new Error('center invalid');
           }
           return data;
-        } catch (error) {
+        } catch (error) { // eslint-disable-line
           throw new Error('center invalid');
         }
       },
@@ -101,7 +101,7 @@ const argv = await yargs(hideBin(process.argv))
             data: v,
             dataRaw: data,
           };
-        } catch (error) {
+        } catch (error) { // eslint-disable-line
           throw new Error('data invalid');
         }
       },
