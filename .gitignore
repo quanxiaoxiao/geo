@@ -6,6 +6,7 @@ logger
 .env
 tiles/*
 data/*
+_index.mjs
 
 # Swap
 [._]*.s[a-v][a-z]
