@@ -2,9 +2,6 @@
   "name": "geo",
   "version": "0.0.1",
   "type": "module",
-  "bin": {
-    "geo": "./bin/index.mjs"
-  },
   "scripts": {
     "test": "node --test"
   },
