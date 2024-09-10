@@ -45,9 +45,12 @@ export default ({
   center,
   zoom,
   coordinates,
-  options,
+  radius = 600,
+  opacity = 0.8,
+  domain = [5, 120],
+  colors = ['yellow', 'red', 'black'],
 }) => {
-  const radius = calcPixelWidthByDistance(options.hexbinRadius, zoom, center[1]);
+  const hexbinRadius = calcPixelWidthByDistance(radius, zoom, center[1]);
   const { width, height } = ctx.canvas;
   const projection = mercator({
     width,
@@ -56,34 +59,34 @@ export default ({
     zoom,
   });
   const colorScale = scale
-    .scaleSequential((t) => chroma.scale(options.hexbinColors).domain([0, 1])(t).hex())
-    .domain(options.hexbinDomain)
+    .scaleSequential((t) => chroma.scale(colors).domain([0, 1])(t).hex())
+    .domain(domain)
     .clamp(true);
   const arr = coordinates.map((coordinate) => projection(coordinate));
   const index = makeIndex(arr);
-  const w = Math.sin(angles[1]) * radius * 2;
-  const h = radius * 2 - Math.cos(angles[1]) * radius;
+  const w = Math.sin(angles[1]) * hexbinRadius * 2;
+  const h = hexbinRadius * 2 - Math.cos(angles[1]) * hexbinRadius;
   let y = h * 0.5;
   let i = 0;
   ctx.save();
-  ctx.globalAlpha = options.hexbinOpacity;
-  while (y < height + radius) {
+  ctx.globalAlpha = opacity;
+  while (y < height + hexbinRadius) {
     y = i * h;
     let x = w * 0.5;
     let j = 0;
-    while (x < width + radius) {
+    while (x < width + hexbinRadius) {
       x = j * w;
       const p = [
         (i & 1) ? x + w * 0.5 : x,
         y,
       ];
       const count = index
-        .within(p[0], p[1], radius)
+        .within(p[0], p[1], hexbinRadius)
         .length;
-      if (count >= 2) {
+      if (count >= domain[0]) {
         drawHexagon({
           ctx,
-          radius,
+          radius: hexbinRadius,
           x: p[0],
           y: p[1],
           color: colorScale(count),

@@ -7,15 +7,16 @@ import {
 
 export default ({
   ctx,
-  radius,
   center,
   zoom,
   coordinates,
+  radius = 8,
+  domain = [5, 128],
 }) => {
   const { width, height } = ctx.canvas;
   const colorScale = scale
     .scaleSequential((t) => chroma.scale(['yellow', 'red', 'black']).domain([0, 1])(t).hex())
-    .domain([1, 128])
+    .domain(domain)
     .clamp(true);
   const countX = width / (radius * 2);
   const countY = height / (radius * 2);
@@ -51,7 +52,7 @@ export default ({
         const d = arr[i];
         return d[0] >= x1 && d[0] <= x2 && d[1] >= y1 && d[1] <= y2;
       }).length;
-      if (count >= 2) {
+      if (count >= domain[0]) {
         ctx.fillStyle = colorScale(count);
         ctx.beginPath();
         ctx.fillRect(x1, y1, x2 - x1, y2 - y1);

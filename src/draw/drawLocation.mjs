@@ -5,7 +5,12 @@ export default ({
   coordinate,
   center,
   zoom,
-  options,
+  radius = 12,
+  shadowBlur = 4,
+  fill = '#0f89f5',
+  shadowColor = '#000',
+  strokeColor = '#fff',
+  strokeWidth = 2,
 }) => {
   const { width, height } = ctx.canvas;
   const projection = mercator({
@@ -15,18 +20,17 @@ export default ({
     zoom,
   });
   const [x, y] = projection(coordinate);
-  const r = options.locationRadius;
   ctx.save();
-  ctx.shadowBlur = options.locationShadowBlur;
-  ctx.fillStyle = options.locationStrokeColor;
-  ctx.shadowColor = options.locationShadowColor;
+  ctx.shadowBlur = shadowBlur;
+  ctx.fillStyle = strokeColor;
+  ctx.shadowColor = shadowColor;
   ctx.beginPath();
-  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.arc(x, y, radius, 0, 2 * Math.PI);
   ctx.fill();
 
   ctx.restore();
-  ctx.fillStyle = options.locationFillColor;
+  ctx.fillStyle = fill;
   ctx.beginPath();
-  ctx.arc(x, y, r - options.locationStrokeWidth, 0, 2 * Math.PI);
+  ctx.arc(x, y, radius - strokeWidth, 0, 2 * Math.PI);
   ctx.fill();
 };

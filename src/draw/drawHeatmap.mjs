@@ -25,12 +25,13 @@ const generateDesityImg = ({
   projection,
   center,
   zoom,
-  options,
+  radius,
+  opacity,
 }) => {
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext('2d');
-  const r = calcPixelWidthByDistance(options.heatmapRadius, zoom, center[1]);
-  ctx.globalAlpha = options.heatmapOpacity;
+  const r = calcPixelWidthByDistance(radius, zoom, center[1]);
+  ctx.globalAlpha = opacity;
   for (let i = 0; i < coordinates.length; i++) {
     const coordinate = coordinates[i];
     const [x, y] = projection(coordinate);
@@ -50,7 +51,8 @@ export default ({
   coordinates,
   center,
   zoom,
-  options,
+  radius = 300,
+  opacity = 0.06,
 }) => {
   const { width, height } = ctx.canvas;
   const projection = mercator({
@@ -59,7 +61,7 @@ export default ({
     center,
     zoom,
   });
-  const paletten = createPaletten(options);
+  const paletten = createPaletten();
   const img = generateDesityImg({
     coordinates,
     projection,
@@ -67,7 +69,8 @@ export default ({
     height,
     center,
     zoom,
-    options,
+    radius,
+    opacity,
   });
   const imgData = img.data;
   for (let y = 0; y < height; y++) {
