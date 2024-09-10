@@ -19,7 +19,10 @@ export default ({
   ctx,
   center,
   zoom,
-  options,
+  fontSize = 14,
+  background = 'rgba(255, 255, 255, 0.2)',
+  strokeColor = '#000',
+  textColor = '#000',
 }) => {
   const { width, height } = ctx.canvas;
   const point = [32, height - 32];
@@ -30,16 +33,15 @@ export default ({
     zoom,
   });
   const dist = map[zoom];
-  const fontSize = options.scaleTextSize;
   if (dist) {
     const coordinate = projection.invert(point);
     const scaleWidth = calcPixelWidthByDistance(dist, zoom, coordinate[1]);
-    ctx.fillStyle = options.scaleBackground;
+    ctx.fillStyle = background;
     const h = fontSize * 2;
     ctx.beginPath();
     ctx.fillRect(point[0] - 2, point[1] - h + 8, scaleWidth + 4, h);
 
-    ctx.strokeStyle = options.scaleStrokeColor;
+    ctx.strokeStyle = strokeColor;
     ctx.beginPath();
     ctx.moveTo(point[0], point[1] - 4);
     ctx.lineTo(point[0], point[1] + 4);
@@ -48,7 +50,7 @@ export default ({
     ctx.moveTo(point[0] + scaleWidth, point[1] - 4);
     ctx.lineTo(point[0] + scaleWidth, point[1] + 4);
     ctx.stroke();
-    ctx.fillStyle = options.scaleTextColor;
+    ctx.fillStyle = textColor;
     ctx.font = `bold ${fontSize}px serif`;
     ctx.beginPath();
     const text = dist >= 1000 ? `${dist / 1000}km` : `${dist}m`;

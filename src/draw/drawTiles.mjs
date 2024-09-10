@@ -59,11 +59,12 @@ export default async ({
   ctx,
   center,
   zoom,
-  options,
+  background = '#f4f4f4',
+  debug,
 }) => {
   const { width, height } = ctx.canvas;
 
-  ctx.fillStyle = options.tileBackground;
+  ctx.fillStyle = background;
   ctx.beginPath();
   ctx.fillRect(0, 0, width, height);
 
@@ -95,7 +96,7 @@ export default async ({
     });
   });
 
-  if (options.tileDebug) {
+  if (debug) {
     for (let i = 0; i < tileList.length; i++) {
       const tileItem = tileList[i];
       ctx.beginPath();

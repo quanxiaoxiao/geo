@@ -7,6 +7,8 @@ logger
 tiles/*
 data/*
 _index.mjs
+tile.png
+fonts/*
 
 # Swap
 [._]*.s[a-v][a-z]

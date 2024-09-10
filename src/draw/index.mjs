@@ -113,5 +113,7 @@ export default async ({
   }
   const buf = ctx.canvas.toBuffer('image/png');
 
-  process.stdout.write(buf);
+  return buf;
+
+  // process.stdout.write(buf);
 };
