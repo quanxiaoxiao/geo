@@ -8,7 +8,6 @@ tiles/*
 data/*
 scripts/*
 _index.mjs
-tile.png
 fonts/*
 output/*
 

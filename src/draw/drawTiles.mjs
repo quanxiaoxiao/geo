@@ -1,4 +1,7 @@
+import path from 'node:path';
+import fs from 'node:fs';
 import { loadImage } from '@napi-rs/canvas';
+import shelljs from 'shelljs';
 import { Semaphore } from '@quanxiaoxiao/utils';
 import {
   calcLngAtTileX,
@@ -82,7 +85,23 @@ export default async ({
 
     tileList.forEach((tileItem) => {
       sem.acquire(async () => {
-        const imageBuf = await fetchTile(tileItem.data[0], tileItem.data[1], tileItem.data[2]);
+        const tilesDir = path.resolve(process.cwd(), 'tiles');
+        const tileBasedir = path.join(tilesDir, `${tileItem.data[0]}`, `${tileItem.data[1]}`);
+        const tilePathname = path.join(tileBasedir, `${tileItem.data[2]}.png`);
+        const willTileStore = shelljs.test('-d', tilesDir);
+        let imageBuf;
+        if (willTileStore && shelljs.test('-f', tilePathname)) {
+          imageBuf = fs.readFileSync(tilePathname);
+        }
+        if (!imageBuf) {
+          imageBuf = await fetchTile(tileItem.data[0], tileItem.data[1], tileItem.data[2]);
+          if (willTileStore) {
+            if (!shelljs.test('-d', tileBasedir)) {
+              shelljs.mkdir('-p', tileBasedir);
+            }
+            fs.writeFileSync(tilePathname, imageBuf);
+          }
+        }
         const image = await loadImage(imageBuf);
         ctx.drawImage(
           image,
