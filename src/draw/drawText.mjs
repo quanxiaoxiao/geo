@@ -2,15 +2,20 @@ export default ({
   ctx,
   name,
   textColor = '#000',
-  fontSize = 16,
+  fontSize,
   fontFamily,
   bold,
   x,
   y,
 }) => {
-  const { width } = ctx.canvas;
+  const { width, height } = ctx.canvas;
   ctx.fillStyle = textColor;
-  ctx.font = `${fontSize}px`;
+  let size = fontSize;
+  if (!size) {
+    const len = name.length;
+    size = Math.max(width * 0.8 / len, 12);
+  }
+  ctx.font = `${size}px`;
   if (bold) {
     ctx.font = `bold ${ctx.font}`;
   }
@@ -25,7 +30,7 @@ export default ({
     y: textHeight,
   };
   if (y == null) {
-    position.y = fontSize * 2 + position.y;
+    position.y = height * 0.02 + position.y;
   } else {
     position.y = y + position.y;
   }
