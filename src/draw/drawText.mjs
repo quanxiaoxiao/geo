@@ -5,6 +5,7 @@ export default ({
   fontSize,
   fontFamily,
   bold,
+  textAlign = 'left',
   x,
   y,
 }) => {
@@ -36,6 +37,9 @@ export default ({
   }
   if (x != null) {
     position.x = x;
+    if (textAlign === 'center') {
+      position.x -= metrics.width * 0.5;
+    }
   }
   ctx.fillText(name, position.x, position.y);
 };
