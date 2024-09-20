@@ -10,6 +10,7 @@ export default ({
   strokeColor,
   strokeWidth,
 }) => {
+  ctx.save();
   const { width, height } = ctx.canvas;
   const projection = mercator({
     width,
@@ -18,13 +19,11 @@ export default ({
     zoom,
   });
   const [x, y] = projection(coordinate);
-  ctx.save();
   ctx.fillStyle = fill;
   ctx.beginPath();
   ctx.arc(x, y, radius, 0, 2 * Math.PI);
   ctx.fill();
 
-  ctx.restore();
   ctx.beginPath();
   if (strokeWidth) {
     ctx.strokeStyle = strokeColor || '#000';
@@ -37,4 +36,5 @@ export default ({
     ctx.arc(x, y, radius  - strokeWidth, 0, 2 * Math.PI);
     ctx.stroke();
   }
+  ctx.restore();
 };

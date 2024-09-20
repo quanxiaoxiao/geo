@@ -1,5 +1,6 @@
+import assert from 'node:assert';
 import circleToPolygon from 'circle-to-polygon';
-import mercator from '../utils/mercator.mjs';
+import drawPolygon from './drawPolygon.mjs';
 
 export default ({
   ctx,
@@ -11,42 +12,18 @@ export default ({
   strokeWidth,
   strokeColor,
 }) => {
-  const { width, height } = ctx.canvas;
-  const projection = mercator({
-    width,
-    height,
-    center,
-    zoom,
-  });
+  assert(typeof radius === 'number');
+  assert(radius > 0);
   const { coordinates: [coordinates] } = circleToPolygon(coordinate, radius, {
     numberOfEdges: 128,
   });
-  ctx.save();
-  if (fill) {
-    ctx.fillStyle = fill;
-  }
-  if (strokeWidth) {
-    ctx.strokeStyle = strokeColor || '#000';
-    ctx.lineWidth = strokeWidth;
-  } else if (strokeColor) {
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = strokeColor;
-  }
-  ctx.beginPath();
-  for (let i = 0; i < coordinates.length; i++) {
-    const [x, y] = projection(coordinates[i]);
-    if (i === 0) {
-      ctx.moveTo(x, y);
-    } else {
-      ctx.lineTo(x, y);
-    }
-  }
-  ctx.closePath();
-  if (fill) {
-    ctx.fill();
-  }
-  if (strokeWidth || strokeColor) {
-    ctx.stroke();
-  }
-  ctx.restore();
+  drawPolygon({
+    ctx,
+    center,
+    zoom,
+    coordinates: [coordinates.reverse()],
+    fill,
+    strokeWidth,
+    strokeColor,
+  });
 };
