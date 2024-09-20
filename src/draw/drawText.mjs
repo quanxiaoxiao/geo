@@ -39,6 +39,8 @@ export default ({
     position.x = x;
     if (textAlign === 'center') {
       position.x -= metrics.width * 0.5;
+    } else if (textAlign === 'right') {
+      position.x -= metrics.width;
     }
   }
   ctx.fillText(name, position.x, position.y);

@@ -1,17 +1,22 @@
 {
-  "name": "geo",
-  "version": "0.0.1",
+  "name": "@quanxiaoxiao/geo",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "test": "node --test"
   },
+  "main": "./src/index.mjs",
+  "exports": "./src/index.mjs",
   "devDependencies": {
     "@eslint/js": "^9.3.0",
     "eslint": "^9.3.0",
     "globals": "^15.3.0"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "engines": {
-    "node": ">= 14.18.0"
+    "node": ">= 20.0.0"
   },
   "dependencies": {
     "@mapbox/geo-viewport": "^0.5.0",

@@ -19,7 +19,11 @@ export default ({
     center,
     zoom,
   });
-  const [x, y] = projection(coordinate);
+  let x = width / 2;
+  let y = height / 2;
+  if (coordinate) {
+    [x, y] = projection(coordinate);
+  }
   ctx.save();
   ctx.shadowBlur = shadowBlur;
   ctx.fillStyle = strokeColor;
