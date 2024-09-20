@@ -14,34 +14,6 @@ export const calcLatAtTileY = (lat, zoom) => (1 - Math.log(Math.tan(lat * PI / 1
 
 export const calcTileXAtLng = (lng, z) => lng / (2 ** z) * 360 - 180;
 
-export const isPointInChina = (coordinate) => {
-  const [lng, lat] = coordinate;
-  assert(typeof lng === 'number' && typeof lat === 'number');
-  const bbox = [
-    [73.6753792663, 18.197700914],
-    [135.026311477, 53.4588044297],
-  ];
-  if (lng < bbox[0][0]) {
-    return false;
-  }
-  if (lng > bbox[1][0]) {
-    return false;
-  }
-  if (lat < bbox[0][1]) {
-    return false;
-  }
-  if (lat > bbox[1][1]) {
-    return false;
-  }
-  return true;
-};
-
-
-export const calcTileYAtLat = (lat, z) => {
-  const n = PI - 2 * PI * lat / (2 ** z);
-  return (180 / PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
-};
-
 export const mercator = ({
   center,
   zoom,

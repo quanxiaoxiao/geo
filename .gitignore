@@ -4,13 +4,13 @@ logger
 *.tar
 .DS_store
 .env
+points.json
 tiles/*
 data/*
 scripts/*
 _index.mjs
 fonts/*
 output/*
-07_days/*
 
 # Swap
 [._]*.s[a-v][a-z]
