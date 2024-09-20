@@ -3,10 +3,10 @@ import fs from 'node:fs';
 import { loadImage } from '@napi-rs/canvas';
 import shelljs from 'shelljs';
 import { Semaphore } from '@quanxiaoxiao/utils';
+import mercator from '../utils/mercator.mjs';
 import {
   calcLngAtTileX,
   calcLatAtTileY,
-  mercator,
 } from '../utils/index.mjs';
 import fetchTile from '../utils/fetchTile.mjs';
 import { TILE_SIZE } from '../constants.mjs';

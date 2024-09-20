@@ -1,7 +1,7 @@
 import { geoMercator } from 'd3-geo';
 import calcZoomToScale from './calcZoomToScale.mjs';
 
-export const mercator = ({
+export default ({
   center,
   zoom,
   width,

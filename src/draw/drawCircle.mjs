@@ -1,5 +1,5 @@
 import circleToPolygon from 'circle-to-polygon';
-import { mercator } from '../utils/index.mjs';
+import mercator from '../utils/mercator.mjs';
 
 export default ({
   ctx,

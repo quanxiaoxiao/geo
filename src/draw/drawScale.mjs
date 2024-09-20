@@ -1,7 +1,5 @@
-import {
-  mercator,
-  calcPixelWidthByDistance,
-} from '../utils/index.mjs';
+import mercator from '../utils/mercator.mjs';
+import { calcPixelWidthByDistance } from '../utils/index.mjs';
 
 const map = {
   10: 10 * 1000,

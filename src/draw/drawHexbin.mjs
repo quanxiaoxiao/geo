@@ -1,7 +1,7 @@
 import * as scale from 'd3-scale';
 import chroma from 'chroma-js';
+import mercator from '../utils/mercator.mjs';
 import {
-  mercator,
   makeIndex,
   calcPixelWidthByDistance,
 } from '../utils/index.mjs';
