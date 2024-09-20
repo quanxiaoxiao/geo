@@ -1,3 +1,4 @@
+import assert from 'node:assert';
 import { geoMercator } from 'd3-geo';
 import calcZoomToScale from './calcZoomToScale.mjs';
 
@@ -7,6 +8,9 @@ export default ({
   width,
   height,
 }) => {
+  assert(typeof width === 'number');
+  assert(typeof height === 'number');
+  assert(width > 0 && height > 0);
   const projection = geoMercator()
     .scale(calcZoomToScale(zoom))
     .center(center)
