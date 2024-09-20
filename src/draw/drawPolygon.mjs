@@ -1,15 +1,19 @@
 import { geoPath } from 'd3-geo';
 import mercator from '../utils/mercator.mjs';
 
+const defaultFillColor = 'rgba(23, 145, 253, 0.3)';
+const defaultStrokeColor = 'rgba(23, 145, 253, 1)';
+
 export default ({
   ctx,
   center,
   zoom,
   coordinates,
-  fill = 'rgba(255, 255, 0, 0.3)',
+  fill,
   strokeWidth,
   strokeColor,
 }) => {
+  ctx.save();
   const { width, height } = ctx.canvas;
   const projection = mercator({
     zoom,
@@ -17,9 +21,6 @@ export default ({
     width,
     height,
   });
-  ctx.fillStyle = fill;
-  ctx.strokeStyle = '#000';
-  ctx.lineWidth = 2;
   ctx.beginPath();
   geoPath()
     .projection(projection)
@@ -28,15 +29,25 @@ export default ({
       coordinates,
     });
   ctx.closePath();
-  ctx.fill();
+  if(fill) {
+    ctx.fillStyle = fill;
+    ctx.fill();
+  } else if (!strokeWidth && !strokeColor) {
+    ctx.fillStyle =  defaultFillColor;
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = defaultStrokeColor;
+    ctx.stroke();
+  }
   if (strokeWidth) {
-    ctx.strokeStyle = strokeColor || '#000';
+    ctx.strokeStyle = strokeColor || defaultStrokeColor;
     ctx.lineWidth = strokeWidth;
   } else if (strokeColor) {
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
     ctx.strokeStyle = strokeColor;
   }
   if (strokeWidth || strokeColor) {
     ctx.stroke();
   }
+  ctx.restore();
 };

@@ -21,6 +21,7 @@ export default ({
   const { coordinates: [coordinates] } = circleToPolygon(coordinate, radius, {
     numberOfEdges: 128,
   });
+  ctx.save();
   if (fill) {
     ctx.fillStyle = fill;
   }
@@ -31,7 +32,6 @@ export default ({
     ctx.lineWidth = 1;
     ctx.strokeStyle = strokeColor;
   }
-  ctx.save();
   ctx.beginPath();
   for (let i = 0; i < coordinates.length; i++) {
     const [x, y] = projection(coordinates[i]);
