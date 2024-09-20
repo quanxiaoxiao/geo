@@ -11,6 +11,8 @@ import drawScale from './draw/drawScale.mjs';
 import drawText from './draw/drawText.mjs';
 import drawTiles from './draw/drawTiles.mjs';
 import createCanvas from './createCanvas.mjs';
+import mercator from './utils/mercator.mjs';
+import calcCenterOfBbox from './utils/calcCenterOfBbox.mjs';
 
 export {
   createCanvas,
@@ -26,4 +28,6 @@ export {
   drawScale,
   drawText,
   drawTiles,
+  mercator,
+  calcCenterOfBbox,
 };
