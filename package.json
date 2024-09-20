@@ -35,6 +35,7 @@
     "gcoord": "^1.0.5",
     "kdbush": "^4.0.2",
     "lodash": "^4.17.21",
+    "mp4-mjpeg": "^0.0.2",
     "polylabel": "^2.0.1",
     "shelljs": "^0.8.5",
     "supercluster": "^8.0.1",
