@@ -1,3 +1,4 @@
+import process from 'node:process';
 import path from 'node:path';
 import fs from 'node:fs';
 import { loadImage } from '@napi-rs/canvas';
@@ -78,42 +79,45 @@ export default async ({
     height,
   });
 
-  await new Promise((resolve) => {
-    const sem = new Semaphore(32, () => {
-      resolve();
-    });
+  if (tileList.length > 0) {
+    await new Promise((resolve) => {
+      const sem = new Semaphore(32, () => {
+        resolve();
+      });
 
-    tileList.forEach((tileItem) => {
-      sem.acquire(async () => {
-        const tilesDir = path.resolve(process.cwd(), 'tiles');
-        const tileBasedir = path.join(tilesDir, `${tileItem.data[0]}`, `${tileItem.data[1]}`);
-        const tilePathname = path.join(tileBasedir, `${tileItem.data[2]}.png`);
-        const willTileStore = shelljs.test('-d', tilesDir);
-        let imageBuf;
-        if (willTileStore && shelljs.test('-f', tilePathname)) {
-          imageBuf = fs.readFileSync(tilePathname);
-        }
-        if (!imageBuf) {
-          imageBuf = await fetchTile(tileItem.data[0], tileItem.data[1], tileItem.data[2]);
-          if (willTileStore) {
-            if (!shelljs.test('-d', tileBasedir)) {
-              shelljs.mkdir('-p', tileBasedir);
-            }
-            fs.writeFileSync(tilePathname, imageBuf);
+      tileList.forEach((tileItem) => {
+        sem.acquire(async () => {
+          const tilesDir = path.resolve(process.cwd(), 'tiles');
+          const tileBasedir = path.join(tilesDir, `${tileItem.data[0]}`, `${tileItem.data[1]}`);
+          const tilePathname = path.join(tileBasedir, `${tileItem.data[2]}.png`);
+          const willTileStore = shelljs.test('-d', tilesDir);
+          let imageBuf;
+          if (willTileStore && shelljs.test('-f', tilePathname)) {
+            imageBuf = fs.readFileSync(tilePathname);
           }
-        }
-        const image = await loadImage(imageBuf);
-        ctx.drawImage(
-          image,
-          tileItem.x,
-          tileItem.y,
-          tileItem.width,
-          tileItem.height,
-        );
-        sem.release();
+          if (!imageBuf) {
+            imageBuf = await fetchTile(tileItem.data[0], tileItem.data[1], tileItem.data[2]);
+            if (willTileStore) {
+              if (!shelljs.test('-d', tileBasedir)) {
+                shelljs.mkdir('-p', tileBasedir);
+              }
+              fs.writeFileSync(tilePathname, imageBuf);
+            }
+          }
+          const image = await loadImage(imageBuf);
+          ctx.drawImage(
+            image,
+            tileItem.x,
+            tileItem.y,
+            tileItem.width,
+            tileItem.height,
+          );
+          sem.release();
+        });
       });
     });
-  });
+  }
+
 
   if (debug) {
     for (let i = 0; i < tileList.length; i++) {
