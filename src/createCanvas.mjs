@@ -32,5 +32,5 @@ export default ({
     ctx.fillStyle = background;
     ctx.fillRect(0, 0, width, height);
   }
-  return ctx;
+  return canvas;
 };
