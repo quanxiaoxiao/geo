@@ -88,8 +88,8 @@ export default async ({
       tileList.forEach((tileItem) => {
         sem.acquire(async () => {
           const tilesDir = path.resolve(process.cwd(), 'tiles');
-          const tileBasedir = path.join(tilesDir, `${tileItem.data[0]}`, `${tileItem.data[1]}`);
-          const tilePathname = path.join(tileBasedir, `${tileItem.data[2]}.png`);
+          const tileBasedir = path.join(tilesDir, `${tileItem.data[2]}`, `${tileItem.data[1]}`);
+          const tilePathname = path.join(tileBasedir, `${tileItem.data[0]}.png`);
           const willTileStore = shelljs.test('-d', tilesDir);
           let imageBuf;
           if (willTileStore && shelljs.test('-f', tilePathname)) {
