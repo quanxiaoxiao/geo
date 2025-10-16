@@ -9,39 +9,37 @@ export default ({
   x,
   y,
 }) => {
+  ctx.save();
   const { width, height } = ctx.canvas;
   ctx.fillStyle = textColor;
-  let size = fontSize;
-  if (!size) {
-    const len = name.length;
-    size = Math.max(width * 0.8 / len, 12);
-  }
-  ctx.font = `${size}px`;
+  const size = fontSize ?? Math.max((width * 0.8) / name.length, 12);
+  const fontParts = [];
   if (bold) {
-    ctx.font = `bold ${ctx.font}`;
-  }
+    fontParts.push('bold');
+  };
+  fontParts.push(`${size}px`);
   if (fontFamily) {
-    ctx.font = `${ctx.font} ${fontFamily}`;
+    fontParts.push(fontFamily);
   }
+
+  ctx.font = fontParts.join(' ');
+
   ctx.beginPath();
   const metrics = ctx.measureText(name);
   const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-  const position = {
-    x: width * 0.5 - metrics.width * 0.5,
-    y: textHeight,
-  };
-  if (y == null) {
-    position.y = height * 0.02 + position.y;
-  } else {
-    position.y = y + position.y;
-  }
+
+  let posX;
   if (x != null) {
-    position.x = x;
+    posX = x;
     if (textAlign === 'center') {
-      position.x -= metrics.width * 0.5;
+      posX -= metrics.width / 2;
     } else if (textAlign === 'right') {
-      position.x -= metrics.width;
+      posX -= metrics.width;
     }
+  } else {
+    posX = (width - metrics.width) / 2;
   }
-  ctx.fillText(name, position.x, position.y);
+  const posY = (y ?? height * 0.02) + textHeight;
+  ctx.fillText(name, posX, posY);
+  ctx.restore();
 };
