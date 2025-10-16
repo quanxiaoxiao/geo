@@ -14,6 +14,7 @@ export default ({
   strokeWidth = 1,
   fill = 'rgba(23, 145, 253, 0.3)',
   strokeColor = 'rgba(23, 145, 253, 1)',
+  strokeDashArray,
 }) => {
   checkCoordinate(center);
   assert(typeof radius === 'number');
@@ -30,5 +31,6 @@ export default ({
     fill,
     strokeWidth,
     strokeColor,
+    strokeDashArray,
   });
 };

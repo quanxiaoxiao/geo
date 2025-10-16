@@ -13,6 +13,7 @@ export default ({
   coordinates,
   fill,
   strokeWidth,
+  strokeDashArray,
   strokeColor,
 }) => {
   checkCoordinate(center);
@@ -55,8 +56,10 @@ export default ({
   }
 
   if (strokeWidth || strokeColor) {
+    if (strokeDashArray) {
+      ctx.setLineDash(strokeDashArray);
+    }
     ctx.stroke();
   }
   ctx.restore();
-
 };
