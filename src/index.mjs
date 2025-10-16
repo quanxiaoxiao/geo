@@ -12,11 +12,9 @@ import drawScale from './draw/drawScale.mjs';
 import drawText from './draw/drawText.mjs';
 import drawTiles from './draw/drawTiles.mjs';
 import storeImage from './draw/storeImage.mjs';
-import calcCenterOfBbox from './utils/calcCenterOfBbox.mjs';
 import mercator from './utils/mercator.mjs';
 
 export {
-  calcCenterOfBbox,
   createCanvas,
   drawCircle,
   drawCluster,

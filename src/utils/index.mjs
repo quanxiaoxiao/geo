@@ -99,31 +99,3 @@ export const isPointInCoordinates = (point, vs) => {
   }
   return inside;
 };
-
-export const getBoundsByPolygon = (polygon) => {
-  let x1 = -Infinity;
-  let y1 = -Infinity;
-  let x2 = Infinity;
-  let y2 = Infinity;
-  for (let i = 0; i < polygon.length; i++) {
-    const coordinates = polygon[i];
-    for (let j = 0; j < coordinates.length; j++) {
-      const coordinate = coordinates[j];
-      const [lng, lat] = coordinate;
-      if (lng > x1) {
-        x1 = lng;
-      }
-      if (lng < x2) {
-        x2 = lng;
-      }
-      if (lat > y1) {
-        y1 = lat;
-      }
-      if (lat < y2) {
-        y2 = lat;
-      }
-    }
-  }
-  assert(x1 !== -Infinity && x2 !== Infinity && y1 !== -Infinity && y2 !== Infinity);
-  return [[x1, y2], [x2, y1]];
-};
