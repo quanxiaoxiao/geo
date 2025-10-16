@@ -1,6 +1,7 @@
+import assert from 'node:assert';
 import fs from 'node:fs';
 import path from 'node:path';
-import assert from 'node:assert';
+
 import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import shelljs from 'shelljs';
 
@@ -16,7 +17,6 @@ if (shelljs.test('-d', fontsDir)) {
     }
   }
 }
-
 
 export default ({
   width = 200,

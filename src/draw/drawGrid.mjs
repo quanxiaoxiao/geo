@@ -1,9 +1,10 @@
 import chroma from 'chroma-js';
 import * as scale from 'd3-scale';
-import mercator from '../utils/mercator.mjs';
+
 import {
   makeIndex,
 } from '../utils/index.mjs';
+import mercator from '../utils/mercator.mjs';
 
 export default ({
   ctx,

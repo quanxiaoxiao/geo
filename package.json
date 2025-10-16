@@ -8,9 +8,10 @@
   "main": "./src/index.mjs",
   "exports": "./src/index.mjs",
   "devDependencies": {
-    "@eslint/js": "^9.3.0",
-    "eslint": "^9.3.0",
-    "globals": "^15.3.0"
+    "@eslint/js": "^9.37.0",
+    "eslint": "^9.37.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^16.4.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
@@ -21,9 +22,10 @@
   "dependencies": {
     "@mapbox/geo-viewport": "^0.5.0",
     "@napi-rs/canvas": "^0.1.44",
-    "@quanxiaoxiao/http-request": "^0.55.0",
-    "@quanxiaoxiao/mongo": "^0.3.0",
-    "@quanxiaoxiao/utils": "^0.12.0",
+    "@quanxiaoxiao/http-request": "^0.73.0",
+    "@quanxiaoxiao/mongo": "^0.5.0",
+    "@quanxiaoxiao/utils": "^0.17.0",
+    "@turf/turf": "^7.2.0",
     "ajv": "^8.12.0",
     "chroma-js": "^3.1.1",
     "circle-to-polygon": "^2.2.0",
@@ -31,14 +33,15 @@
     "d3-geo": "^3.1.0",
     "d3-scale": "^4.0.2",
     "dayjs": "^1.11.9",
-    "dotenv": "^16.4.5",
+    "dotenv": "^17.2.3",
+    "file-type": "^21.0.0",
     "gcoord": "^1.0.5",
     "jimp": "^1.6.0",
     "kdbush": "^4.0.2",
     "lodash": "^4.17.21",
     "mp4-mjpeg": "^0.0.2",
     "polylabel": "^2.0.1",
-    "shelljs": "^0.8.5",
+    "shelljs": "^0.10.0",
     "supercluster": "^8.0.1",
     "user-agents": "^1.1.320"
   }

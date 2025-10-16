@@ -1,5 +1,7 @@
 import assert from 'node:assert';
+
 import { geoMercator } from 'd3-geo';
+
 import calcZoomToScale from './calcZoomToScale.mjs';
 
 export default ({

@@ -1,6 +1,7 @@
 import { createCanvas } from '@napi-rs/canvas';
-import mercator from '../utils/mercator.mjs';
+
 import { calcPixelWidthByDistance } from '../utils/index.mjs';
+import mercator from '../utils/mercator.mjs';
 
 const createPaletten = () => {
   const canvas = createCanvas(256, 1);

@@ -1,16 +1,18 @@
-import process from 'node:process';
-import path from 'node:path';
 import fs from 'node:fs';
+import path from 'node:path';
+import process from 'node:process';
+
 import { loadImage } from '@napi-rs/canvas';
-import shelljs from 'shelljs';
 import { Semaphore } from '@quanxiaoxiao/utils';
-import mercator from '../utils/mercator.mjs';
-import {
-  calcLngAtTileX,
-  calcLatAtTileY,
-} from '../utils/index.mjs';
-import fetchTile from '../utils/fetchTile.mjs';
+import shelljs from 'shelljs';
+
 import { TILE_SIZE } from '../constants.mjs';
+import fetchTile from '../utils/fetchTile.mjs';
+import {
+  calcLatAtTileY,
+  calcLngAtTileX,
+} from '../utils/index.mjs';
+import mercator from '../utils/mercator.mjs';
 
 const generateTiles = ({
   zoom,
@@ -117,7 +119,6 @@ export default async ({
       });
     });
   }
-
 
   if (debug) {
     for (let i = 0; i < tileList.length; i++) {

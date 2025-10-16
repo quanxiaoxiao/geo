@@ -1,9 +1,10 @@
 import assert from 'node:assert';
+
+import calcCenter from './calcCenter.mjs';
 import {
   calcDist,
   makeIndex,
 } from './index.mjs';
-import calcCenter from './calcCenter.mjs';
 
 const PRECISION = 1000;
 const EARTH_RADIUS = 6371 * 1000;

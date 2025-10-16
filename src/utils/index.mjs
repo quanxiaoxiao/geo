@@ -1,9 +1,11 @@
 import assert from 'node:assert';
-import KDBush from 'kdbush';
+
 import { geoMercator } from 'd3-geo';
+import KDBush from 'kdbush';
+
 import {
-  TILE_SIZE,
   EARTH_RADIUS,
+  TILE_SIZE,
 } from '../constants.mjs';
 
 const { PI } = Math;
@@ -98,7 +100,6 @@ export const isPointInCoordinates = (point, vs) => {
   return inside;
 };
 
-
 export const getBoundsByPolygon = (polygon) => {
   let x1 = -Infinity;
   let y1 = -Infinity;
@@ -126,4 +127,3 @@ export const getBoundsByPolygon = (polygon) => {
   assert(x1 !== -Infinity && x2 !== Infinity && y1 !== -Infinity && y2 !== Infinity);
   return [[x1, y2], [x2, y1]];
 };
-

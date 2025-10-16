@@ -11,4 +11,3 @@ export default (coordinate1, coordinate2) => {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return EARTH_RADIUS * c;
 };
-

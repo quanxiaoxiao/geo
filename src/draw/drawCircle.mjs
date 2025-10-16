@@ -1,5 +1,8 @@
 import assert from 'node:assert';
-import circleToPolygon from 'circle-to-polygon';
+
+import * as turf from '@turf/turf';
+
+import checkCoordinateValidate from '../utils/checkCoordinateValidate.mjs';
 import drawPolygon from './drawPolygon.mjs';
 
 export default ({
@@ -12,16 +15,15 @@ export default ({
   strokeWidth,
   strokeColor,
 }) => {
+  checkCoordinateValidate(center);
   assert(typeof radius === 'number');
   assert(radius > 0);
-  const { coordinates: [coordinates] } = circleToPolygon(coordinate, radius, {
-    numberOfEdges: 128,
-  });
+  const circle = turf.circle(coordinate || center, radius, { units: 'meters', steps: 840 });
   drawPolygon({
     ctx,
     center,
     zoom,
-    coordinates: [coordinates.reverse()],
+    coordinates: [circle.geometry.coordinates[0].reverse()],
     fill,
     strokeWidth,
     strokeColor,

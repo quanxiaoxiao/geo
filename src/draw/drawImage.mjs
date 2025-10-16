@@ -1,5 +1,6 @@
-import { Buffer } from 'node:buffer';
 import assert from 'node:assert';
+import { Buffer } from 'node:buffer';
+
 import { loadImage } from '@napi-rs/canvas';
 
 export default async ({
@@ -16,4 +17,4 @@ export default async ({
     width,
     height,
   );
-}
+};

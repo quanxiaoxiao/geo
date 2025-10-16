@@ -33,7 +33,7 @@ export default ({
     ctx.strokeStyle = strokeColor;
   }
   if (strokeWidth || strokeColor) {
-    ctx.arc(x, y, radius  - strokeWidth, 0, 2 * Math.PI);
+    ctx.arc(x, y, radius - strokeWidth, 0, 2 * Math.PI);
     ctx.stroke();
   }
   ctx.restore();

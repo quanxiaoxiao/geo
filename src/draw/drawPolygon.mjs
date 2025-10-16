@@ -1,4 +1,6 @@
 import { geoPath } from 'd3-geo';
+
+import checkCoordinateValidate from '../utils/checkCoordinateValidate.mjs';
 import mercator from '../utils/mercator.mjs';
 
 const defaultFillColor = 'rgba(23, 145, 253, 0.3)';
@@ -13,32 +15,39 @@ export default ({
   strokeWidth,
   strokeColor,
 }) => {
+  checkCoordinateValidate(center);
+
   ctx.save();
+
   const { width, height } = ctx.canvas;
+
   const projection = mercator({
     zoom,
     center,
     width,
     height,
   });
+
   ctx.beginPath();
-  geoPath()
-    .projection(projection)
-    .context(ctx)({
-      type: 'Polygon',
-      coordinates,
-    });
+
+  geoPath(projection, ctx)({
+    type: 'Polygon',
+    coordinates,
+  });
+
   ctx.closePath();
-  if(fill) {
+
+  if (fill) {
     ctx.fillStyle = fill;
     ctx.fill();
   } else if (!strokeWidth && !strokeColor) {
-    ctx.fillStyle =  defaultFillColor;
+    ctx.fillStyle = defaultFillColor;
     ctx.fill();
     ctx.lineWidth = 2;
     ctx.strokeStyle = defaultStrokeColor;
     ctx.stroke();
   }
+
   if (strokeWidth) {
     ctx.strokeStyle = strokeColor || defaultStrokeColor;
     ctx.lineWidth = strokeWidth;
@@ -46,8 +55,10 @@ export default ({
     ctx.lineWidth = 2;
     ctx.strokeStyle = strokeColor;
   }
+
   if (strokeWidth || strokeColor) {
     ctx.stroke();
   }
   ctx.restore();
+
 };

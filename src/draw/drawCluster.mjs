@@ -1,6 +1,7 @@
+import * as scale from 'd3-scale';
 import _ from 'lodash';
 import Supercluster from 'supercluster';
-import * as scale from 'd3-scale';
+
 import mercator from '../utils/mercator.mjs';
 
 export default ({

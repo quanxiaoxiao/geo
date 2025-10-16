@@ -1,10 +1,11 @@
-import * as scale from 'd3-scale';
 import chroma from 'chroma-js';
-import mercator from '../utils/mercator.mjs';
+import * as scale from 'd3-scale';
+
 import {
-  makeIndex,
   calcPixelWidthByDistance,
+  makeIndex,
 } from '../utils/index.mjs';
+import mercator from '../utils/mercator.mjs';
 
 const thirdPi = Math.PI / 3;
 

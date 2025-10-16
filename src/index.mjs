@@ -1,3 +1,4 @@
+import createCanvas from './createCanvas.mjs';
 import drawCircle from './draw/drawCircle.mjs';
 import drawCluster from './draw/drawCluster.mjs';
 import drawGrid from './draw/drawGrid.mjs';
@@ -10,11 +11,12 @@ import drawPolygon from './draw/drawPolygon.mjs';
 import drawScale from './draw/drawScale.mjs';
 import drawText from './draw/drawText.mjs';
 import drawTiles from './draw/drawTiles.mjs';
-import createCanvas from './createCanvas.mjs';
-import mercator from './utils/mercator.mjs';
+import storeImage from './draw/storeImage.mjs';
 import calcCenterOfBbox from './utils/calcCenterOfBbox.mjs';
+import mercator from './utils/mercator.mjs';
 
 export {
+  calcCenterOfBbox,
   createCanvas,
   drawCircle,
   drawCluster,
@@ -29,5 +31,5 @@ export {
   drawText,
   drawTiles,
   mercator,
-  calcCenterOfBbox,
+  storeImage,
 };
