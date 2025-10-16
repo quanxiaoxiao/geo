@@ -1,3 +1,4 @@
+import checkCoordinate from '../utils/checkCoordinate.mjs';
 import mercator from '../utils/mercator.mjs';
 
 export default ({
@@ -13,6 +14,7 @@ export default ({
   strokeWidth = 2,
 }) => {
   const { width, height } = ctx.canvas;
+  checkCoordinate(center);
   const projection = mercator({
     width,
     height,
@@ -22,6 +24,7 @@ export default ({
   let x = width / 2;
   let y = height / 2;
   if (coordinate) {
+    checkCoordinate(coordinate);
     [x, y] = projection(coordinate);
   }
   ctx.save();

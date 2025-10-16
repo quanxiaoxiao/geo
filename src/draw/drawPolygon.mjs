@@ -1,6 +1,6 @@
 import { geoPath } from 'd3-geo';
 
-import checkCoordinateValidate from '../utils/checkCoordinateValidate.mjs';
+import checkCoordinate from '../utils/checkCoordinate.mjs';
 import mercator from '../utils/mercator.mjs';
 
 const defaultFillColor = 'rgba(23, 145, 253, 0.3)';
@@ -15,7 +15,7 @@ export default ({
   strokeWidth,
   strokeColor,
 }) => {
-  checkCoordinateValidate(center);
+  checkCoordinate(center);
 
   ctx.save();
 

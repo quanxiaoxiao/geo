@@ -2,7 +2,7 @@ import assert from 'node:assert';
 
 import * as turf from '@turf/turf';
 
-import checkCoordinateValidate from '../utils/checkCoordinateValidate.mjs';
+import checkCoordinate from '../utils/checkCoordinate.mjs';
 import drawPolygon from './drawPolygon.mjs';
 
 export default ({
@@ -15,7 +15,7 @@ export default ({
   strokeWidth,
   strokeColor,
 }) => {
-  checkCoordinateValidate(center);
+  checkCoordinate(center);
   assert(typeof radius === 'number');
   assert(radius > 0);
   const circle = turf.circle(coordinate || center, radius, { units: 'meters', steps: 840 });
