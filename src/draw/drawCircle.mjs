@@ -11,13 +11,16 @@ export default ({
   coordinate,
   zoom,
   radius,
-  fill,
-  strokeWidth,
-  strokeColor,
+  strokeWidth = 1,
+  fill = 'rgba(23, 145, 253, 0.3)',
+  strokeColor = 'rgba(23, 145, 253, 1)',
 }) => {
   checkCoordinate(center);
   assert(typeof radius === 'number');
   assert(radius > 0);
+  if (coordinate) {
+    checkCoordinate(coordinate);
+  }
   const circle = turf.circle(coordinate || center, radius, { units: 'meters', steps: 840 });
   drawPolygon({
     ctx,

@@ -16,9 +16,7 @@ export default ({
   strokeColor,
 }) => {
   checkCoordinate(center);
-
   ctx.save();
-
   const { width, height } = ctx.canvas;
 
   const projection = mercator({
