@@ -57,8 +57,8 @@ export default ({
     if (strokeDashArray) {
       ctx.setLineDash(strokeDashArray);
     }
-
     ctx.stroke();
   }
+
   ctx.restore();
 };

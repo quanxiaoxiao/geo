@@ -14,10 +14,13 @@ export default ({
   ctx.fillStyle = textColor;
   const size = fontSize ?? Math.max((width * 0.8) / name.length, 12);
   const fontParts = [];
+
   if (bold) {
     fontParts.push('bold');
   };
+
   fontParts.push(`${size}px`);
+
   if (fontFamily) {
     fontParts.push(fontFamily);
   }
