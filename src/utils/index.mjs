@@ -1,12 +1,8 @@
 import assert from 'node:assert';
 
-import { geoMercator } from 'd3-geo';
 import KDBush from 'kdbush';
 
-import {
-  EARTH_RADIUS,
-  TILE_SIZE,
-} from '../constants.mjs';
+const EARTH_RADIUS = 6378137.0;
 
 const { PI } = Math;
 
@@ -15,20 +11,6 @@ export const calcLngAtTileX = (lng, zoom) => ((lng + 180) % 360) / 360 * (2 ** z
 export const calcLatAtTileY = (lat, zoom) => (1 - Math.log(Math.tan(lat * PI / 180) + 1 / Math.cos(lat * PI / 180)) / PI) / 2 * (2 ** zoom);
 
 export const calcTileXAtLng = (lng, z) => lng / (2 ** z) * 360 - 180;
-
-export const mercator = ({
-  center,
-  zoom,
-  width,
-  height,
-}) => {
-  const scale = (2 ** zoom) * TILE_SIZE / (Math.PI * 2);
-  const projection = geoMercator()
-    .scale(scale)
-    .center(center)
-    .translate([width / 2, height / 2]);
-  return projection;
-};
 
 export const calcDist = (x1, y1, x2, y2) => {
   const diffX = Math.abs(x1 - x2);

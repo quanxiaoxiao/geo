@@ -1,5 +1,7 @@
 import assert from 'node:assert';
 
+import * as turf from '@turf/turf';
+
 import calcCenter from './calcCenter.mjs';
 import {
   calcDist,
@@ -7,7 +9,7 @@ import {
 } from './index.mjs';
 
 const PRECISION = 1000;
-const EARTH_RADIUS = 6371 * 1000;
+const EARTH_RADIUS = turf.earthRadius;
 
 const filterSafeDistance = (arr) => {
   const result = [];

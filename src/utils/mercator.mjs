@@ -3,6 +3,7 @@ import assert from 'node:assert';
 import { geoMercator } from 'd3-geo';
 
 import calcZoomToScale from './calcZoomToScale.mjs';
+import checkCoordinate from './checkCoordinate.mjs';
 
 export default ({
   center,
@@ -10,9 +11,21 @@ export default ({
   width,
   height,
 }) => {
-  assert(typeof width === 'number');
-  assert(typeof height === 'number');
-  assert(width > 0 && height > 0);
+  assert(
+    typeof width === 'number' && width > 0,
+    'width must be a positive number',
+  );
+  assert(
+    typeof height === 'number' && height > 0,
+    'height must be a positive number',
+  );
+  assert(
+    typeof zoom === 'number' && zoom > 0,
+    'zoom must be a positive number',
+  );
+
+  checkCoordinate(center);
+
   const projection = geoMercator()
     .scale(calcZoomToScale(zoom))
     .center(center)
