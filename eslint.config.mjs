@@ -15,6 +15,7 @@ export default [
     },
     files: [
       'src/**/*.mjs',
+      'services/**/*.mjs',
       '_index.mjs',
       'scripts/**/*.mjs',
       'eslint.config.mjs',

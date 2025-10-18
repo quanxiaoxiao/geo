@@ -21,7 +21,7 @@ if (shelljs.test('-d', fontsDir)) {
 export default ({
   width = 200,
   height = 200,
-  background,
+  background = '#f4f4f4',
 } = {}) => {
   assert(width >= 1);
   assert(height >= 1);

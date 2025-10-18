@@ -12,6 +12,7 @@ _index.mjs
 _note
 fonts/*
 output/*
+services/fetchActions.mjs
 
 # Swap
 [._]*.s[a-v][a-z]
