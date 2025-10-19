@@ -26,7 +26,6 @@ export default async ({
   const canvas = createCanvas({
     width,
     height,
-    background: '#f4f4f4',
   });
 
   const ctx = canvas.getContext('2d');

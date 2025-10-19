@@ -6,15 +6,26 @@ import { loadImage } from '@napi-rs/canvas';
 export default async ({
   ctx,
   image,
+  rect,
 }) => {
   assert(Buffer.isBuffer(image));
   const { width, height } = ctx.canvas;
   const img = await loadImage(image);
-  ctx.drawImage(
-    img,
-    0,
-    0,
-    width,
-    height,
-  );
+  if (rect) {
+    ctx.drawImage(
+      img,
+      rect.x,
+      rect.y,
+      rect.width,
+      rect.height,
+    );
+  } else {
+    ctx.drawImage(
+      img,
+      0,
+      0,
+      width,
+      height,
+    );
+  }
 };
