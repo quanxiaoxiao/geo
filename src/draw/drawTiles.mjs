@@ -8,11 +8,11 @@ import shelljs from 'shelljs';
 
 import { TILE_SIZE } from '../constants.mjs';
 import fetchTile from '../utils/fetchTile.mjs';
+import mercator from '../utils/mercator.mjs';
 import {
   calcLatAtTileY,
   calcLngAtTileX,
-} from '../utils/index.mjs';
-import mercator from '../utils/mercator.mjs';
+} from '../utils/tile.mjs';
 
 const drawDebugInfo = (ctx, tileList) => {
   ctx.strokeStyle = '#000';

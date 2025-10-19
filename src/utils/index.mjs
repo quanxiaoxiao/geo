@@ -6,12 +6,6 @@ const EARTH_RADIUS = 6378137.0;
 
 const { PI } = Math;
 
-export const calcLngAtTileX = (lng, zoom) => ((lng + 180) % 360) / 360 * (2 ** zoom);
-
-export const calcLatAtTileY = (lat, zoom) => (1 - Math.log(Math.tan(lat * PI / 180) + 1 / Math.cos(lat * PI / 180)) / PI) / 2 * (2 ** zoom);
-
-export const calcTileXAtLng = (lng, z) => lng / (2 ** z) * 360 - 180;
-
 export const calcDist = (x1, y1, x2, y2) => {
   const diffX = Math.abs(x1 - x2);
   const diffY = Math.abs(y1 - y2);
