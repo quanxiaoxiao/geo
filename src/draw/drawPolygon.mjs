@@ -1,3 +1,5 @@
+import assert from 'node:assert';
+
 import { geoPath } from 'd3-geo';
 
 import checkCoordinate from '../utils/checkCoordinate.mjs';
@@ -13,10 +15,12 @@ export default ({
   zoom,
   coordinates,
   fill,
+  type = 'Polygon',
   strokeWidth,
   strokeDashArray,
   strokeColor,
 }) => {
+  assert(type === 'Polygon' || type === 'MultiPolygon');
   checkCoordinate(center);
   ctx.save();
   const { width, height } = ctx.canvas;
@@ -31,7 +35,7 @@ export default ({
   ctx.beginPath();
 
   geoPath(projection, ctx)({
-    type: 'Polygon',
+    type,
     coordinates,
   });
 
