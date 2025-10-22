@@ -1,4 +1,4 @@
-import { EARTH_RADIUS } from '../constants.mjs';
+const EARTH_RADIUS = 6378137.0;
 
 const angle2Radian = (angle) => angle * Math.PI / 180;
 

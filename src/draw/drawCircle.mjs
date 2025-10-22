@@ -1,5 +1,6 @@
 import assert from 'node:assert';
 
+import rewind from '@turf/rewind';
 import * as turf from '@turf/turf';
 
 import checkCoordinate from '../utils/checkCoordinate.mjs';
@@ -27,12 +28,11 @@ export default ({
     radius,
     { units: 'meters', steps: 840 },
   );
-  const coordinates = circle.geometry.coordinates[0].reverse();
   drawPolygon({
     ctx,
     center,
     zoom,
-    coordinates: [coordinates],
+    coordinates: rewind(circle, { reverse: true }).geometry.coordinates,
     fill,
     strokeWidth,
     strokeColor,
