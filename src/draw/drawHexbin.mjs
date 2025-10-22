@@ -59,6 +59,50 @@ const drawHexagon = ({
   ctx.fill();
 };
 
+const getRangePoints = ({
+  width,
+  height,
+  center,
+  zoom,
+  radius,
+  coordinates,
+}) => {
+  const projection = mercator({
+    width,
+    height,
+    center,
+    zoom,
+  });
+  const hexRadius = distanceToPixels(radius, zoom, center[1]);
+  const hexWidth = SIN_THIRD_PI * hexRadius * 2;
+  const hexHeight = hexRadius * (2 - COS_THIRD_PI);
+  const numRows = Math.ceil((height + hexRadius) / hexHeight) + 1;
+  const numCols = Math.ceil((width + hexRadius) / hexWidth) + 1;
+  const projectedPoints = coordinates.map((coordinate) => projection(coordinate));
+  const spatialIndex = buildSpatialIndex(projectedPoints);
+  const result = [];
+  for (let row = 0; row < numRows; row++) {
+    const y = row * hexHeight;
+    const isOddRow = row & 1;
+
+    for (let col = 0; col < numCols; col++) {
+      const x = col * hexWidth + (isOddRow ? hexWidth * 0.5 : 0);
+
+      const pointCount = spatialIndex.within(x, y, hexRadius).length;
+
+      if (pointCount > 0) {
+        result.push({
+          x,
+          y,
+          radius: hexRadius,
+          count: pointCount,
+        });
+      }
+    }
+  }
+  return result;
+};
+
 export default ({
   ctx,
   center,
@@ -72,48 +116,32 @@ export default ({
   const { width, height } = ctx.canvas;
   const colorScale = createColorScale(colors, domain);
 
-  const projection = mercator({
-    width,
-    height,
-    center,
-    zoom,
-  });
-  const hexRadius = distanceToPixels(radius, zoom, center[1]);
-  const projectedPoints = coordinates.map((coordinate) => projection(coordinate));
-  const spatialIndex = buildSpatialIndex(projectedPoints);
-  const hexWidth = SIN_THIRD_PI * hexRadius * 2;
-  const hexHeight = hexRadius * (2 - COS_THIRD_PI);
-
-  const numRows = Math.ceil((height + hexRadius) / hexHeight) + 1;
-  const numCols = Math.ceil((width + hexRadius) / hexWidth) + 1;
   const [minCount] = domain;
 
   ctx.save();
   ctx.globalAlpha = opacity;
 
-  for (let row = 0; row < numRows; row++) {
-    const y = row * hexHeight;
-    const isOddRow = row & 1;
+  const pointList = getRangePoints({
+    width,
+    height,
+    center,
+    zoom,
+    radius,
+    coordinates,
+  });
 
-    for (let col = 0; col < numCols; col++) {
-      const x = col * hexWidth + (isOddRow ? hexWidth * 0.5 : 0);
-
-      if (x < -hexRadius || y < -hexRadius) {
-        continue;
-      }
-
-      const pointCount = spatialIndex.within(x, y, hexRadius).length;
-
-      if (pointCount >= minCount) {
-        drawHexagon({
-          ctx,
-          x,
-          y,
-          radius: hexRadius,
-          color: colorScale(pointCount),
-        });
-      }
+  for (let i = 0; i < pointList.length; i++) {
+    const pointItem = pointList[i];
+    if (pointItem.count >= minCount) {
+      drawHexagon({
+        ctx,
+        x: pointItem.x,
+        y: pointItem.y,
+        radius: pointItem.radius,
+        color: colorScale(pointItem.count),
+      });
     }
   }
+
   ctx.restore();
 };
