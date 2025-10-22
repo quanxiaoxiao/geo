@@ -1,36 +1,54 @@
 import chroma from 'chroma-js';
 import * as scale from 'd3-scale';
+import KDBush from 'kdbush';
 
-import {
-  calcPixelWidthByDistance,
-  makeIndex,
-} from '../utils/index.mjs';
 import mercator from '../utils/mercator.mjs';
 
-const thirdPi = Math.PI / 3;
+const EARTH_RADIUS = 6378137.0;
+const { PI } = Math;
 
-const angles = [
-  0,
-  thirdPi,
-  thirdPi * 2,
-  thirdPi * 3,
-  thirdPi * 4,
-  thirdPi * 5,
-];
+const THIRD_PI = PI / 3;
+const SIN_THIRD_PI = Math.sin(THIRD_PI);
+const COS_THIRD_PI = Math.cos(THIRD_PI);
+const HEXAGON_ANGLES = Array.from({ length: 6 }, (_, i) => i * THIRD_PI);
+
+const buildSpatialIndex = (points) => {
+  const index = new KDBush(points.length);
+  for (let i = 0; i < points.length; i++) {
+    index.add(points[i][0], points[i][1]);
+  }
+  return index.finish();
+};
+
+const distanceToPixels = (dist, zoom, lat = 0) => {
+  const latRadius = Math.cos(lat * PI / 180) * EARTH_RADIUS;
+  const circumference = 2 * latRadius * PI;
+  const ratio = dist / circumference;
+  return (2 ** zoom) * 256 * ratio;
+};
+
+const createColorScale = (colors, domain) => {
+  const chromaScale = chroma.scale(colors).domain([0, 1]);
+  return scale
+    .scaleSequential((t) => chromaScale(t).hex())
+    .domain(domain)
+    .clamp(true);
+};
 
 const drawHexagon = ({
+  ctx,
   radius,
   x,
   y,
-  ctx,
   color,
 }) => {
-  ctx.beginPath();
   ctx.fillStyle = color;
-  for (let i = 0; i < angles.length; i++) {
-    const angle = angles[i];
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const angle = HEXAGON_ANGLES[i];
     const dx = x + Math.sin(angle) * radius;
     const dy = y + Math.cos(angle) * radius;
+
     if (i === 0) {
       ctx.moveTo(dx, dy);
     } else {
@@ -51,7 +69,6 @@ export default ({
   domain = [5, 120],
   colors = ['yellow', 'red', 'black'],
 }) => {
-  const hexbinRadius = calcPixelWidthByDistance(radius, zoom, center[1]);
   const { width, height } = ctx.canvas;
   const projection = mercator({
     width,
@@ -59,43 +76,43 @@ export default ({
     center,
     zoom,
   });
-  const colorScale = scale
-    .scaleSequential((t) => chroma.scale(colors).domain([0, 1])(t).hex())
-    .domain(domain)
-    .clamp(true);
-  const arr = coordinates.map((coordinate) => projection(coordinate));
-  const index = makeIndex(arr);
-  const w = Math.sin(angles[1]) * hexbinRadius * 2;
-  const h = hexbinRadius * 2 - Math.cos(angles[1]) * hexbinRadius;
-  let y = h * 0.5;
-  let i = 0;
+  const hexRadius = distanceToPixels(radius, zoom, center[1]);
+  const colorScale = createColorScale(colors, domain);
+  const projectedPoints = coordinates.map((coordinate) => projection(coordinate));
+  const spatialIndex = buildSpatialIndex(projectedPoints);
+  const hexWidth = SIN_THIRD_PI * hexRadius * 2;
+  const hexHeight = hexRadius * (2 - COS_THIRD_PI);
+
+  const numRows = Math.ceil((height + hexRadius) / hexHeight) + 1;
+  const numCols = Math.ceil((width + hexRadius) / hexWidth) + 1;
+  const [minCount] = domain;
+
   ctx.save();
   ctx.globalAlpha = opacity;
-  while (y < height + hexbinRadius) {
-    y = i * h;
-    let x = w * 0.5;
-    let j = 0;
-    while (x < width + hexbinRadius) {
-      x = j * w;
-      const p = [
-        (i & 1) ? x + w * 0.5 : x,
-        y,
-      ];
-      const count = index
-        .within(p[0], p[1], hexbinRadius)
-        .length;
-      if (count >= domain[0]) {
+
+  for (let row = 0; row < numRows; row++) {
+    const y = row * hexHeight;
+    const isOddRow = row & 1;
+
+    for (let col = 0; col < numCols; col++) {
+      const x = col * hexWidth + (isOddRow ? hexWidth * 0.5 : 0);
+
+      if (x < -hexRadius || y < -hexRadius) {
+        continue;
+      }
+
+      const pointCount = spatialIndex.within(x, y, hexRadius).length;
+
+      if (pointCount >= minCount) {
         drawHexagon({
           ctx,
-          radius: hexbinRadius,
-          x: p[0],
-          y: p[1],
-          color: colorScale(count),
+          x,
+          y,
+          radius: hexRadius,
+          color: colorScale(pointCount),
         });
       }
-      j++;
     }
-    i++;
   }
   ctx.restore();
 };
