@@ -1,10 +1,10 @@
 import { calcPixelWidthByDistance } from '../utils/index.mjs';
 import mercator from '../utils/mercator.mjs';
 
-const map = {
-  10: 10 * 1000,
-  11: 5 * 1000,
-  12: 3 * 1000,
+const SCALE_DISTANCE_MAP = {
+  10: 10000,
+  11: 5000,
+  12: 3000,
   13: 1000,
   14: 500,
   15: 300,
@@ -13,15 +13,29 @@ const map = {
   18: 50,
 };
 
+const DEFAULT_CONFIG = {
+  fontSize: 14,
+  background: 'rgba(255, 255, 255, 0.2)',
+  strokeColor: '#000',
+  textColor: '#000',
+  padding: 32,
+  tickHeight: 4,
+  barPadding: 2,
+};
+
 export default ({
   ctx,
   center,
   zoom,
-  fontSize = 14,
-  background = 'rgba(255, 255, 255, 0.2)',
-  strokeColor = '#000',
-  textColor = '#000',
+  fontSize = DEFAULT_CONFIG.fontSize,
+  background = DEFAULT_CONFIG.background,
+  strokeColor = DEFAULT_CONFIG.strokeColor,
+  textColor = DEFAULT_CONFIG.textColor,
 }) => {
+  const distance = SCALE_DISTANCE_MAP[zoom];
+  if (!distance) {
+    return;
+  }
   const { width, height } = ctx.canvas;
   const point = [32, height - 32];
   const projection = mercator({
@@ -30,10 +44,9 @@ export default ({
     center,
     zoom,
   });
-  const dist = map[zoom];
-  if (dist) {
+  if (distance) {
     const coordinate = projection.invert(point);
-    const scaleWidth = calcPixelWidthByDistance(dist, zoom, coordinate[1]);
+    const scaleWidth = calcPixelWidthByDistance(distance, zoom, coordinate[1]);
     ctx.fillStyle = background;
     const h = fontSize * 2;
     ctx.beginPath();
@@ -51,7 +64,7 @@ export default ({
     ctx.fillStyle = textColor;
     ctx.font = `bold ${fontSize}px serif`;
     ctx.beginPath();
-    const text = dist >= 1000 ? `${dist / 1000}km` : `${dist}m`;
+    const text = distance >= 1000 ? `${distance / 1000}km` : `${distance}m`;
     const metrics = ctx.measureText(text);
     const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
     ctx.fillText(text, point[0] + scaleWidth * 0.5 - metrics.width * 0.5, point[1] - textHeight * 0.4);
