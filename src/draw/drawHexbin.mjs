@@ -70,6 +70,8 @@ export default ({
   colors = ['yellow', 'red', 'black'],
 }) => {
   const { width, height } = ctx.canvas;
+  const colorScale = createColorScale(colors, domain);
+
   const projection = mercator({
     width,
     height,
@@ -77,7 +79,6 @@ export default ({
     zoom,
   });
   const hexRadius = distanceToPixels(radius, zoom, center[1]);
-  const colorScale = createColorScale(colors, domain);
   const projectedPoints = coordinates.map((coordinate) => projection(coordinate));
   const spatialIndex = buildSpatialIndex(projectedPoints);
   const hexWidth = SIN_THIRD_PI * hexRadius * 2;
