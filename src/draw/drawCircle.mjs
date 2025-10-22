@@ -17,17 +17,22 @@ export default ({
   strokeDashArray,
 }) => {
   checkCoordinate(center);
-  assert(typeof radius === 'number');
-  assert(radius > 0);
+  assert(typeof radius === 'number' && radius > 0, 'radius 必须是大于 0 的数字');
   if (coordinate) {
     checkCoordinate(coordinate);
   }
-  const circle = turf.circle(coordinate || center, radius, { units: 'meters', steps: 840 });
+  const circleCenter = coordinate || center;
+  const circle = turf.circle(
+    circleCenter,
+    radius,
+    { units: 'meters', steps: 840 },
+  );
+  const coordinates = circle.geometry.coordinates[0].reverse();
   drawPolygon({
     ctx,
     center,
     zoom,
-    coordinates: [circle.geometry.coordinates[0].reverse()],
+    coordinates: [coordinates],
     fill,
     strokeWidth,
     strokeColor,
