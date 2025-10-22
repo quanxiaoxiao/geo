@@ -37,36 +37,43 @@ export default ({
     return;
   }
   const { width, height } = ctx.canvas;
-  const point = [32, height - 32];
   const projection = mercator({
     width,
     height,
     center,
     zoom,
   });
-  if (distance) {
-    const coordinate = projection.invert(point);
-    const scaleWidth = calcPixelWidthByDistance(distance, zoom, coordinate[1]);
-    ctx.fillStyle = background;
-    const h = fontSize * 2;
-    ctx.beginPath();
-    ctx.fillRect(point[0] - 2, point[1] - h + 8, scaleWidth + 4, h);
+  const pointX = DEFAULT_CONFIG.padding;
+  const pointY = height - DEFAULT_CONFIG.padding;
+  const coordinate = projection.invert([pointX, pointY]);
+  const barHeight = fontSize * 2;
+  const scaleWidth = calcPixelWidthByDistance(distance, zoom, coordinate[1]);
 
-    ctx.strokeStyle = strokeColor;
-    ctx.beginPath();
-    ctx.moveTo(point[0], point[1] - 4);
-    ctx.lineTo(point[0], point[1] + 4);
-    ctx.moveTo(point[0], point[1]);
-    ctx.lineTo(point[0] + scaleWidth, point[1]);
-    ctx.moveTo(point[0] + scaleWidth, point[1] - 4);
-    ctx.lineTo(point[0] + scaleWidth, point[1] + 4);
-    ctx.stroke();
-    ctx.fillStyle = textColor;
-    ctx.font = `bold ${fontSize}px serif`;
-    ctx.beginPath();
-    const text = distance >= 1000 ? `${distance / 1000}km` : `${distance}m`;
-    const metrics = ctx.measureText(text);
-    const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-    ctx.fillText(text, point[0] + scaleWidth * 0.5 - metrics.width * 0.5, point[1] - textHeight * 0.4);
-  }
+  ctx.save();
+  ctx.fillStyle = background;
+  ctx.beginPath();
+  ctx.fillRect(
+    pointX - DEFAULT_CONFIG.barPadding,
+    pointY - barHeight + 8,
+    scaleWidth + 4,
+    barHeight,
+  );
+
+  ctx.strokeStyle = strokeColor;
+  ctx.beginPath();
+  ctx.moveTo(pointX, pointY - 4);
+  ctx.lineTo(pointX, pointY + 4);
+  ctx.moveTo(pointX, pointY);
+  ctx.lineTo(pointX + scaleWidth, pointY);
+  ctx.moveTo(pointX + scaleWidth, pointY - 4);
+  ctx.lineTo(pointX + scaleWidth, pointY + 4);
+  ctx.stroke();
+  ctx.fillStyle = textColor;
+  ctx.font = `bold ${fontSize}px serif`;
+  ctx.beginPath();
+  const text = distance >= 1000 ? `${distance / 1000}km` : `${distance}m`;
+  const metrics = ctx.measureText(text);
+  const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+  ctx.fillText(text, pointX + scaleWidth * 0.5 - metrics.width * 0.5, pointY - textHeight * 0.4);
+  ctx.restore();
 };
