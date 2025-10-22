@@ -23,6 +23,30 @@ const DEFAULT_CONFIG = {
   barPadding: 2,
 };
 
+const drawScaleTicks = (ctx, x, y, scaleWidth, tickHeight) => {
+  ctx.beginPath();
+  ctx.moveTo(x, y - tickHeight);
+  ctx.lineTo(x, y + tickHeight);
+  ctx.moveTo(x, y);
+  ctx.lineTo(x + scaleWidth, y);
+  ctx.moveTo(x + scaleWidth, y - tickHeight);
+  ctx.lineTo(x + scaleWidth, y + tickHeight);
+  ctx.stroke();
+};
+
+const formatDistance = (distance) => {
+  return distance >= 1000 ? `${distance / 1000}km` : `${distance}m`;
+};
+
+const drawScaleText = (ctx, text, x, y, scaleWidth) => {
+  const metrics = ctx.measureText(text);
+  const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+  const textX = x + (scaleWidth - metrics.width) / 2;
+  const textY = y - textHeight * 0.4;
+
+  ctx.fillText(text, textX, textY);
+};
+
 export default ({
   ctx,
   center,
@@ -60,20 +84,11 @@ export default ({
   );
 
   ctx.strokeStyle = strokeColor;
-  ctx.beginPath();
-  ctx.moveTo(pointX, pointY - 4);
-  ctx.lineTo(pointX, pointY + 4);
-  ctx.moveTo(pointX, pointY);
-  ctx.lineTo(pointX + scaleWidth, pointY);
-  ctx.moveTo(pointX + scaleWidth, pointY - 4);
-  ctx.lineTo(pointX + scaleWidth, pointY + 4);
-  ctx.stroke();
+  drawScaleTicks(ctx, pointX, pointY, scaleWidth, DEFAULT_CONFIG.tickHeight);
+
   ctx.fillStyle = textColor;
   ctx.font = `bold ${fontSize}px serif`;
-  ctx.beginPath();
-  const text = distance >= 1000 ? `${distance / 1000}km` : `${distance}m`;
-  const metrics = ctx.measureText(text);
-  const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-  ctx.fillText(text, pointX + scaleWidth * 0.5 - metrics.width * 0.5, pointY - textHeight * 0.4);
+  const text = formatDistance(distance);
+  drawScaleText(ctx, text, pointX, pointY, scaleWidth);
   ctx.restore();
 };
